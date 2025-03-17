@@ -28,10 +28,6 @@ const farmerSchema = mongoose.Schema(
             required: true,
             enum: ['Male','Female'],
         },
-        dob: {
-            type: Date,
-            required: true,
-        },
         address: {
             type: String,
             required: true,
