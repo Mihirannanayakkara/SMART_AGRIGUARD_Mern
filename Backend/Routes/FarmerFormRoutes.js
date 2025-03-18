@@ -8,27 +8,27 @@ const router = express.Router();
 router.post('/', async (request,response)=>{
     try{
         if(
-            !request.body.firstName||
-            !request.body.lastName||
-            !request.body.role||
-            !request.body.email||
-            !request.body.gender||
-            !request.body.address||
-            !request.body.contactNumber
+            !request.body.fullname ||
+            !request.body.email ||
+            !request.body.location ||
+            !request.body.contactNumber ||
+            !request.body.plantName ||
+            !request.body.diseaseName ||
+            !request.body.issueDescription
         ){
             return response.status(400).send({
-                message:'send all required field'
+                message:'Please send all required fields'
             });
         }
   
         const newFarmerForm = {
-            firstName: request.body.firstName,
-            lastName: request.body.lastName,
-            role: request.body.role,
+            fullname: request.body.fullname,
             email: request.body.email,
-            gender: request.body.gender,
+            location: request.body.location,
             contactNumber: request.body.contactNumber,
-            address: request.body.address
+            plantName: request.body.plantName,
+            diseaseName: request.body.diseaseName,
+            issueDescription: request.body.issueDescription
   
         };
   
@@ -82,13 +82,13 @@ router.get('/:id', async (request , response)=>{
 router.put('/:id', async(request,response)=>{
     try{
         if(
-            !request.body.firstName||
-            !request.body.lastName||
-            !request.body.role||
-            !request.body.email||
-            !request.body.gender||
-            !request.body.address||
-            !request.body.contactNumber
+            !request.body.fullname ||
+            !request.body.email ||
+            !request.body.location ||
+            !request.body.contactNumber ||
+            !request.body.plantName ||
+            !request.body.diseaseName ||
+            !request.body.issueDescription
         ){
             return response.status(400).send({
                 message:'send all required field'
@@ -103,7 +103,7 @@ router.put('/:id', async(request,response)=>{
             return response.status(404).json({message:'Farmer inqury not found'});
         }
         else{
-            return response.status(200).send({message:'Farmer submission updated successfully'});
+            return response.status(200).send({message:'Farmer inquiry updated successfully'});
         }
 
     }catch(error){
@@ -125,7 +125,7 @@ router.delete('/:id', async (request,response)=>{
             return response.status(404).json({message:'farmer not found'});
         }
         else{
-            return response.status(200).send({message:'farmer details deleted successfully'});
+            return response.status(200).send({message:'farmer inqury deleted successfully'});
         }
     }catch(error){
         console.log(error.message);

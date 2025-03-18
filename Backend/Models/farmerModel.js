@@ -2,12 +2,7 @@ import mongoose from "mongoose";
 
 const farmerSchema = mongoose.Schema(
     {
-        firstName: {
-            type: String,
-            required: true,
-            match: /^[A-Za-z]+$/,
-        },
-        lastName: {
+        fullname: {
             type: String,
             required: true,
             match: /^[A-Za-z]+$/,
@@ -18,19 +13,11 @@ const farmerSchema = mongoose.Schema(
             unique: true,
 
         },
-        role: {
+        location: {
             type: String,
-            required: true,
-            enum: ['farmer', 'home gardner','agriculutre officer']
-        },
-        gender: {
-            type: String,
-            required: true,
-            enum: ['Male','Female'],
-        },
-        address: {
-            type: String,
-            required: true,
+            required:true,
+            unique: true,
+
         },
         contactNumber: {
             type: String,
@@ -41,6 +28,27 @@ const farmerSchema = mongoose.Schema(
                 },
                 message: 'Contact number should be 10 digit number without letters.'
             }
+        },
+        plantName: { 
+            type: String, 
+            required: true
+        },
+        diseaseName: { 
+            type: String, 
+            required: true
+        },
+        issueDescription: { 
+            type: String, 
+            required: true
+        },
+        status: { 
+            type: String, 
+            enum: ["Pending", "In Progress", "Resolved"], 
+            default: "Pending" 
+        },
+        requestDate: {
+            type: Date,
+            default: Date.now
         }
     }
 );

@@ -2,6 +2,7 @@ import express from "express";
 import { PORT , mongoDBURL } from "./config.js";
 import mongoose from "mongoose";
 import FarmerFormRoute from "./Routes/FarmerFormRoutes.js";
+import AiTreatmentRoute from "./Routes/AiTreatmentRoute.js";
 import cors from "cors";
 
 
@@ -21,6 +22,7 @@ app.get('/',(request, response)=>{
 });
 
 app.use('/farmer',FarmerFormRoute);
+app.use('/ai', AiTreatmentRoute);
 
 
 mongoose.connect(mongoDBURL)
