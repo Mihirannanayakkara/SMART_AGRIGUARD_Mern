@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md"; // Import Material Design icons
 import BackgroundSvg from "../images/117.svg"; // Import the background SVG
@@ -6,54 +7,56 @@ import "../../src/index.css";
 
 const Login = () => {
   // State for username, password, and visibility toggle
+  
+
   const [formData, setFormData] = useState({
-    username: "",
-    password: "",
+    email: '',
+    password: ''
   });
 
   const [showPassword, setShowPassword] = useState(false); // Password visibility toggle
   const [error, setError] = useState(""); // State to handle errors
   const [successMessage, setSuccessMessage] = useState(""); // State to display success message (optional)
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   // Handle input changes
   const handleChange = (e) => {
-    const { id, value } = e.target;
-    setFormData((prev) => ({ ...prev, [id]: value }));
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
+
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Clear any previous error state
-    setSuccessMessage("");
+    setLoading(true);
+    setError('');
 
     try {
-      const response = await axios.post("http://localhost:5000/api/login", formData);
-    
-      // Extract token and user from the response
-      const { token, user } = response.data;
-    
-      // Save them into localStorage
-      if (token) {
-        localStorage.setItem("authToken", token);
-    
-        if (user) {
-          console.log("User Details:", user); // Log the user details to debug
-          localStorage.setItem("user", JSON.stringify(user));
-        } else {
-          console.error("User object is missing in the response.");
-        }
-      } else {
-        console.error("Token is missing.");
+      // Direct API call to backend login endpoint
+      const response = await axios.post('http://localhost:5557/api/auth/login', formData);
+      
+      // Store user data and token in localStorage
+      if (response.data.token) {
+        localStorage.setItem('user', JSON.stringify(response.data));
       }
-    
-      setSuccessMessage("Login successful! Redirecting...");
-      setTimeout(() => {
-        window.location.href = "/dashboard";
-      }, 2000);
+      
+      console.log('Login successful:', response.data);
+      
+      // Redirect based on user role
+      if (response.data.user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } catch (err) {
-      console.error("Login failed:", err.response?.data?.message || err.message);
-      setError(err.response?.data?.message || "Invalid username or password");
+      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      console.error('Login error:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -80,50 +83,52 @@ const Login = () => {
           onSubmit={handleSubmit}
         >
           <div className="mb-6">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="username"
-            >
-              Username
-            </label>
-            <input
-              className="shadow my-3 focus:border-green-600 focus:ring-6 appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="username"
-              type="text"
-              placeholder="Username"
-              value={formData.username}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="mb-6 relative">
-            <label
-              className="block text-gray-700 text-sm font-bold mb-2"
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <input
-              className="shadow focus:border-green-600 focus:ring-6 appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="********"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-            {/* Password visibility toggle icon */}
-            <span
-              className="absolute inset-y-0 right-3 flex mt-7 items-center cursor-pointer text-gray-400 hover:text-green-600"
-              onClick={() => setShowPassword((prev) => !prev)}
-            >
-              {showPassword ? <MdVisibilityOff size={24} /> : <MdVisibility size={24} />}
-            </span>
-            {error && <p className="text-red-500 text-xs italic mt-2">{error}</p>}
-            {successMessage && (
-              <p className="text-green-500 text-xs italic mt-2">{successMessage}</p>
-            )}
-          </div>
+  <label
+    className="block text-gray-700 text-sm font-bold mb-2"
+    htmlFor="email"
+  >
+    Email
+  </label>
+  <input
+    className="shadow my-3 focus:border-green-600 focus:ring-6 appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+    id="email"
+    name="email"
+    type="email"
+    placeholder="Email"
+    value={formData.email}
+    onChange={handleChange}
+    required
+  />
+</div>
+<div className="mb-6 relative">
+  <label
+    className="block text-gray-700 text-sm font-bold mb-2"
+    htmlFor="password"
+  >
+    Password
+  </label>
+  <input
+    className="shadow focus:border-green-600 focus:ring-6 appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+    id="password"
+    name="password"
+    type={showPassword ? "text" : "password"}
+    placeholder="********"
+    value={formData.password}
+    onChange={handleChange}
+    required
+  />
+  {/* Password visibility toggle icon */}
+  <span
+    className="absolute inset-y-0 right-3 flex mt-7 items-center cursor-pointer text-gray-400 hover:text-green-600"
+    onClick={() => setShowPassword((prev) => !prev)}
+  >
+    {showPassword ? <MdVisibilityOff size={24} /> : <MdVisibility size={24} />}
+  </span>
+  {error && <p className="text-red-500 text-xs italic mt-2">{error}</p>}
+  {successMessage && (
+    <p className="text-green-500 text-xs italic mt-2">{successMessage}</p>
+  )}
+</div>
           <div className="items-center justify-between">
             <button
               className="bg-green-600 hover:bg-green-900 text-white font-bold py-2 rounded-xl mx-3 px-20 focus:outline-none focus:shadow-outline"
