@@ -16,10 +16,14 @@ function Register() {
     country: "",
     password: "",
     confirmPassword: "",
+    role: "",
+    phoneNumber: "",
+    location: ""
   });
 
   const [error, setError] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, /*setShowPassword*/] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -29,23 +33,37 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     // Password match validation
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match");
+      setLoading(false);
       return;
     }
+
+    // Create the user object to match the backend model
+    const userData = {
+      username: formData.username,
+      email: formData.email,
+      password: formData.password,
+      role: formData.role,
+      fullName: `${formData.firstName} ${formData.lastName}`,
+      phoneNumber: formData.phoneNumber,
+      location: formData.location || formData.country // Use location if provided, otherwise use country
+    };
 
     try {
       // Send registration request
       const response = await axios.post(
-          "http://localhost:5000/api/register",
-          formData
+        "http://localhost:5557/api/auth/register",
+        userData
       );
 
       // Retrieve and store JWT token
       const token = response.data.token;
-      localStorage.setItem("token", token);
+      localStorage.setItem("authToken", token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
 
       // Show success notification using toast
       toast.success("Registration successful! You are now logged in.", {
@@ -70,11 +88,21 @@ function Register() {
         country: "",
         password: "",
         confirmPassword: "",
+        role: "",
+        phoneNumber: "",
+        location: ""
       });
+      
+      // Redirect after successful registration
+      setTimeout(() => {
+        window.location.href = "/l";
+      }, 3000);
     } catch (err) {
       // Error response handling
       console.error("Error during registration:", err.response?.data);
       setError(err.response?.data?.message || "Invalid input data, please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -181,6 +209,53 @@ function Register() {
             </div>
           </div>
 
+          {/* Phone Number and Role */}
+          <div className="flex justify-between gap-4">
+            <div className="w-full">
+              <label
+                className="block text-gray-700 text-sm font-bold mt-2 mb-2"
+                htmlFor="phoneNumber"
+              >
+                Phone Number
+              </label>
+              <input
+                className="shadow-lg my-1 focus:outline-none focus:border-green-600 appearance-none border rounded w-full py-3 px-4 text-gray-700"
+                id="phoneNumber"
+                type="tel"
+                placeholder="Phone Number"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="w-full">
+              <label
+                className="block text-gray-700 text-sm font-bold mt-2 mb-2"
+                htmlFor="role"
+              >
+                Role
+              </label>
+              <select
+                className="shadow-lg my-1 focus:outline-none focus:border-green-600 appearance-none border rounded w-full py-3 px-4 text-gray-700"
+                id="role"
+                value={formData.role}
+                onChange={handleChange}
+                required
+              >
+                <option value="" disabled>
+                  Select Role
+                </option>
+                <option value="farmer">Farmer</option>
+                <option value="OrganicFarmer">Organic Farmer </option>
+                <option value="cropFarmer">Crop Farmer</option>
+                <option value="greenhouseFarmer">Greenhouse Farmer</option>
+                <option value="forester">Forester </option>
+                <option value="gardener">Gardener</option>
+                <option value="soilTester">Soil Tester</option>
+                <option value="agriculturalResearcher">Agricultural Researcher</option>
+              </select>
+            </div>
+          </div>
+
           {/* Date of Birth, Gender, and Country */}
           <div className="flex justify-between gap-4">
             <div className="w-full">
@@ -238,7 +313,7 @@ function Register() {
                 <option value="" disabled>
                   Select Country
                 </option>
-                {["Afghanistan", "Albania"].map((country) => (
+                {["Afghanistan", "Albania", "Algeria", "Argentina", "Australia", "Bangladesh", "Brazil", "Canada", "China", "Egypt", "France", "Germany", "India", "Indonesia", "Italy", "Japan", "Malaysia", "Mexico", "Pakistan", "Russia", "Saudi Arabia", "South Africa", "South Korea", "Spain", "Sri Lanka", "Thailand", "Turkey", "United Arab Emirates", "United Kingdom", "United States"].map((country) => (
                   <option key={country} value={country}>
                     {country}
                   </option>
@@ -247,8 +322,26 @@ function Register() {
             </div>
           </div>
 
-          {/* Password and Confirm Password */}
-          <div className="flex justify-between gap-4">
+          {/* Specific Location */}
+          <div className="w-full">
+            <label
+              className="block text-gray-700 text-sm font-bold mt-2 mb-2"
+              htmlFor="location"
+            >
+              Specific Location/Address
+            </label>
+            <input
+              className="shadow-lg my-1 focus:outline-none focus:border-green-600 appearance-none border rounded w-full py-3 px-4 text-gray-700"
+              id="location"
+              type="text"
+              placeholder="Enter your specific location or address"
+              value={formData.location}
+              onChange={handleChange}
+            />
+          </div>
+
+                    {/* Password and Confirm Password */}
+                    <div className="flex justify-between gap-4">
             <div className="w-full">
               <label
                 className="block text-gray-700 text-sm font-bold mt-3 mb-2"
@@ -286,15 +379,16 @@ function Register() {
           </div>
 
           {/* Error Message */}
-          {error && <p className="text-red-500 text-xs italic">{error}</p>}
+          {error && <p className="text-red-500 text-xs italic mt-2">{error}</p>}
 
           {/* Submit Button */}
           <div className="items-center justify-between">
             <button
               className="ml-auto mr-auto mt-7 flex items-center justify-center bg-green-600 hover:bg-green-800 text-white font-bold py-2.5 rounded-xl mx-3 px-36"
               type="submit"
+              disabled={loading}
             >
-              Register
+              {loading ? "Registering..." : "Register"}
             </button>
           </div>
           <div className="text-center text-xs mt-2">

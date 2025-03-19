@@ -6,9 +6,7 @@ import BackgroundSvg from "../images/117.svg"; // Import the background SVG
 import "../../src/index.css";
 
 const Login = () => {
-  // State for username, password, and visibility toggle
-  
-
+  // State for email, password, and visibility toggle
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -16,9 +14,9 @@ const Login = () => {
 
   const [showPassword, setShowPassword] = useState(false); // Password visibility toggle
   const [error, setError] = useState(""); // State to handle errors
-  const [successMessage, setSuccessMessage] = useState(""); // State to display success message (optional)
+  const [successMessage, /*setSuccessMessage*/] = useState(""); // State to display success message (optional)
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [/*loading*/, setLoading] = useState(false);
 
   // Handle input changes
   const handleChange = (e) => {
