@@ -95,7 +95,7 @@ function Register() {
       
       // Redirect after successful registration
       setTimeout(() => {
-        window.location.href = "/l";
+        window.location.href = "/";
       }, 3000);
     } catch (err) {
       // Error response handling

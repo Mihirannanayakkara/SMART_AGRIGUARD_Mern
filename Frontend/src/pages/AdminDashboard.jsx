@@ -19,45 +19,48 @@ const AdminDashboard = () => {
   const [recentActivities, setRecentActivities] = useState([]);
 
   useEffect(() => {
-    // Replace the mock data with actual user data from localStorage
-  const userData = JSON.parse(localStorage.getItem('user'));
-  if (!userData || userData.user.role !== 'admin') {
-    navigate('/login');
-    return;
-  }
+    console.log("Raw user data:", localStorage.getItem('user'));
+    const userData = JSON.parse(localStorage.getItem('user'));
+    console.log("Parsed user data:", userData);
   
-  setUser(userData.user);
-  
-  // Fetch dashboard stats from API
-  const fetchStats = async () => {
-    try {
-      // API call here
-      // For now, we'll keep using the mock data
-      setStats({
-        users: 256,
-        articles: 48,
-        views: 12540,
-        engagement: 67
-      });
-      
-      // Mock recent activities
-      setRecentActivities([
-        { id: 1, type: 'user', action: 'New user registered', name: 'John Doe', time: '2 hours ago' },
-        { id: 2, type: 'article', action: 'Article published', name: 'Plant Disease Prevention Tips', time: '5 hours ago' },
-        { id: 3, type: 'user', action: 'User updated profile', name: 'Sarah Johnson', time: '1 day ago' },
-        { id: 4, type: 'article', action: 'Article edited', name: 'Organic Farming Methods', time: '2 days ago' },
-        { id: 5, type: 'user', action: 'New user registered', name: 'Michael Brown', time: '3 days ago' }
-      ]);
-      
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching dashboard stats:', error);
-      setLoading(false);
+    if (!userData || (userData.role !== 'admin')) {
+      console.log("Redirecting to login. Reason:", !userData ? "No user data" : "Not admin role");
+      navigate('/login');
+      return;
     }
-  };
-  
-  fetchStats();
-}, [navigate]);
+     
+    setUser(userData);
+    
+    // Fetch dashboard stats from API
+    const fetchStats = async () => {
+      try {
+        // API call here
+        // For now, we'll keep using the mock data
+        setStats({
+          users: 256,
+          articles: 48,
+          views: 12540,
+          engagement: 67
+        });
+        
+        // Mock recent activities
+        setRecentActivities([
+          { id: 1, type: 'user', action: 'New user registered', name: 'John Doe', time: '2 hours ago' },
+          { id: 2, type: 'article', action: 'Article published', name: 'Plant Disease Prevention Tips', time: '5 hours ago' },
+          { id: 3, type: 'user', action: 'User updated profile', name: 'Sarah Johnson', time: '1 day ago' },
+          { id: 4, type: 'article', action: 'Article edited', name: 'Organic Farming Methods', time: '2 days ago' },
+          { id: 5, type: 'user', action: 'New user registered', name: 'Michael Brown', time: '3 days ago' }
+        ]);
+        
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+        setLoading(false);
+      }
+    };
+    
+    fetchStats();
+  }, [navigate]);
     
   // Sample chart data
   const chartData = {
@@ -71,7 +74,11 @@ const AdminDashboard = () => {
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-600"></div>
       </div>
     );
+
+
   }
+
+  
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -87,8 +94,7 @@ const AdminDashboard = () => {
             transition={{ duration: 0.5 }}
           >
             <h1 className="text-3xl font-bold text-gray-800 mb-2">Dashboard</h1>
-            <p className="text-gray-600 mb-8">Welcome, {user?.fullName || user?.username || 'Admin'}!</p>
-
+            <p className="text-gray-600 mb-8">Welcome, {user?.username || 'Admin'}!</p>
           </motion.div>
           
           {/* Stats Cards */}

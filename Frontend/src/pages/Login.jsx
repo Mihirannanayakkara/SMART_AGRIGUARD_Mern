@@ -1,24 +1,22 @@
 import React, { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
-import { MdVisibility, MdVisibilityOff } from "react-icons/md"; // Import Material Design icons
-import BackgroundSvg from "../images/117.svg"; // Import the background SVG
+import { MdVisibility, MdVisibilityOff } from "react-icons/md";
+import BackgroundSvg from "../images/117.svg";
 import "../../src/index.css";
 
 const Login = () => {
-  // State for email, password, and visibility toggle
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
 
-  const [showPassword, setShowPassword] = useState(false); // Password visibility toggle
-  const [error, setError] = useState(""); // State to handle errors
-  const [successMessage, /*setSuccessMessage*/] = useState(""); // State to display success message (optional)
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
-  const [/*loading*/, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
-  // Handle input changes
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -26,29 +24,38 @@ const Login = () => {
     });
   };
 
-
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
     try {
-      // Direct API call to backend login endpoint
+      // Update the URL to match your backend login endpoint
       const response = await axios.post('http://localhost:5557/api/auth/login', formData);
       
-      // Store user data and token in localStorage
       if (response.data.token) {
         localStorage.setItem('user', JSON.stringify(response.data));
-      }
-      
-      console.log('Login successful:', response.data);
-      
-      // Redirect based on user role
-      if (response.data.user.role === 'admin') {
-        navigate('/admin');
+        
+        // Redirect based on user role
+        switch(response.data.role) {
+          case 'admin':
+            navigate('/admin');
+            break;
+          case 'farmer':
+          case 'OrganicFarmer':
+          case 'cropFarmer':
+          case 'greenhouseFarmer':
+          case 'forester':
+          case 'gardener':
+          case 'soilTester':
+          case 'agriculturalResearcher':
+            navigate('/');
+            break;
+          default:
+            navigate('/');
+        }
       } else {
-        navigate('/');
+        setError('Login failed. Please try again.');
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');

@@ -81,8 +81,10 @@ const AdminSidebar = ({ user }) => {
             exit={{ opacity: 0 }}
             className="text-center"
           > 
-            <h3 className="font-semibold text-lg text-gray-800">{user?.fullName.split(' ')[0] || user?.username || 'Admin'}</h3>
-            <p className="text-green-600 text-sm">Welcome back!</p>
+<h3 className="font-semibold text-lg text-gray-800">
+  {user?.fullName ? user.fullName.split(' ')[0] : user?.username || 'Admin'}
+</h3>            
+<p className="text-green-600 text-sm">Welcome back!</p>
           </motion.div>
         )}
       </div>
