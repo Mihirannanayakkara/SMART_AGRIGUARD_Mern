@@ -68,11 +68,21 @@ router.get('/:id', async (request, response) => {
       return response.status(404).json({ message: 'Material not found' });
     }
 
-    return response.status(200).json(material);
-  } catch (error) {
-    console.log(error.message);
-    response.status(500).send({ message: error.message });
-  }
+//     return response.status(200).json(material);
+//   } catch (error) {
+//     console.log(error.message);
+//     response.status(500).send({ message: error.message });
+//   }
+// });
+
+return response.status(200).json({
+  ...material._doc,
+  image: material.image // Ensure the image is included in the response
+});
+} catch (error) {
+console.log(error.message);
+response.status(500).send({ message: error.message });
+}
 });
 
 // Route for Update a Material
