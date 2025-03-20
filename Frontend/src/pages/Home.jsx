@@ -16,12 +16,7 @@ const Home = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-/*************  ✨ Codeium Command ⭐  *************/
-/**
- * Scrolls the page smoothly to the features section.
- */
 
-/******  3e772744-fb85-4546-8842-9b3ead19e6f4  *******/
   const handleGetStarted = () => {
     featuresRef.current.scrollIntoView({ behavior: 'smooth' });
   };
