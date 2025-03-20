@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { FaLeaf, FaSearch, FaMobileAlt } from 'react-icons/fa';
 import { RiPlantLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 
 const Home = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -23,6 +24,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-white text-green-800">
+      <Navbar />
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div
@@ -115,7 +117,7 @@ const Home = () => {
       </section>
 
       {/* Call to Action Section */}
-      <section className="py-20 bg-green-600 text-white">
+      <section className="py-6 bg-green-800 text-white">
         <div className="container mx-auto px-4 text-center">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}

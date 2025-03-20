@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import { JWT_SECRET } from "../config.js";
-import authenticateToken from "../middleware/authMiddleware.js"; // Import the middleware
 
 const router = express.Router();
 
@@ -77,17 +76,5 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Fetch User Profile Route
-router.get('/profile', authenticateToken, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select('-password');
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    res.json(user);
-  } catch (error) {
-    console.error('Error in getUserProfile:', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-export default router;
+
+export default router;  

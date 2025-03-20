@@ -49,7 +49,7 @@ const Login = () => {
           case 'gardener':
           case 'soilTester':
           case 'agriculturalResearcher':
-            navigate('/dashboard');
+            navigate('/');
             break;
           default:
             navigate('/');
