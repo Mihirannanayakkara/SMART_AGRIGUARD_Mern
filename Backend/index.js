@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import { PORT, mongoDBURL } from "./config.js";
-import { register, login } from './routes/userRoutes.js';  // ✅ Named imports
+
 import userRoutes from './routes/userRoutes.js';  // ✅ Default import
 import testRoute from './routes/testRoute.js';  
 
@@ -13,8 +13,8 @@ app.use(cors());
 app.use(express.json());
 
 // Auth Routes
-app.use('/api/auth/register', register);
-app.use('/api/auth/login', login);
+app.use('/api/auth/', userRoutes);
+
 
 // Test Routes
 app.use('/api/test', testRoute);

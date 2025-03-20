@@ -7,10 +7,11 @@ import { JWT_SECRET } from "../config.js";
 const router = express.Router();
 
 // User Registration Route
-export const register = async (req, res) => {  // ✅ Named Export
+router.post("/register", async (req, res) => {
   try {
     const { username, email, password, role, fullName, phoneNumber, location } = req.body;
 
+    // Check if user already exists by email or username
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "Email already in use" });
@@ -21,13 +22,15 @@ export const register = async (req, res) => {  // ✅ Named Export
       return res.status(400).json({ message: "Username already taken" });
     }
 
+    // Hash password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Create new user
     const newUser = new User({
       username,
       email,
       password: hashedPassword,
-      role: role || "farmer",
+      role: role || "farmer", // Default role if not provided
       fullName,
       phoneNumber,
       location,
@@ -40,23 +43,26 @@ export const register = async (req, res) => {  // ✅ Named Export
     console.error("Error in registration:", error);
     res.status(500).json({ message: "Server error" });
   }
-};
+});
 
 // User Login Route
-export const login = async (req, res) => {  // ✅ Named Export
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
+    // Compare entered password with hashed password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid email or password" });
     }
 
+    // Generate JWT Token
     const token = jwt.sign(
       { id: user._id, username: user.username, role: user.role },
       JWT_SECRET,
@@ -68,10 +74,7 @@ export const login = async (req, res) => {  // ✅ Named Export
     console.error("Error in login:", error);
     res.status(500).json({ message: "Server error" });
   }
-};
+});
 
-// Attach routes to router
-router.post("/register", register);
-router.post("/login", login);
 
-export default router;  // ✅ Default Export for Express Router
+export default router;  
