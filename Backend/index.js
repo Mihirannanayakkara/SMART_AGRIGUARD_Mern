@@ -1,25 +1,39 @@
 import express from "express";
-import { PORT , mongoDBURL } from "./config.js";
+import cors from "cors";
 import mongoose from "mongoose";
+import { PORT, mongoDBURL } from "./config.js";
 
-
+import userRoutes from './routes/userRoutes.js';  // ✅ Default import
+import testRoute from './routes/testRoute.js';  
 
 const app = express();
 
-app.get('/',(request, response)=>{
-    console.log(request)
-    return response.status(234).send("welcome")
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Auth Routes
+app.use('/api/auth/', userRoutes);
+
+
+// Test Routes
+app.use('/api/test', testRoute);
+
+// Default route
+app.use('/', (request, response) => {
+  response.send('Welcome to SMART_AGRIGUARD_Mern API');
 });
 
 
+
+
 mongoose.connect(mongoDBURL)
-.then(() => {
-    console.log('Connected to MongoDB');
-    
+  .then(() => {
+    console.log('App connected to database');
     app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+      console.log(`App is listening to port: ${PORT}`);
     });
   })
   .catch((error) => {
-    console.error('Error connecting to MongoDB:', error);
+    console.log(error);
   });
