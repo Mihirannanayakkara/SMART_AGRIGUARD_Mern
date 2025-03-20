@@ -9,11 +9,11 @@ const materialSchema  = mongoose.Schema(
     category: {
       type: String,
       required: true,
-      enum: ['Fertilizer', 'Pesticide', 'Seeds', 'Equipment'], 
+      enum: ['Fertilizer', 'Pesticide', 'Herbicide'], 
     },
     diseaseUsage: [{
       type: String,
-      enum: ['Fungal Infection', 'Bacterial Wilt'], 
+      enum: ['Plant Growth','Insect Control','Weed Killers'], 
     }],
     usageInstructions: {
       type: String,
