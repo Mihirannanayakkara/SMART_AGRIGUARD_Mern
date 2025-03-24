@@ -45,4 +45,4 @@ const materialSchema  = mongoose.Schema(
   }
 );
 
-export const Material  = mongoose.model('Material ', materialSchema );
+export const Material  = mongoose.model('Material', materialSchema );
