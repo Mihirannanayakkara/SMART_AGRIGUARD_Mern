@@ -1,3 +1,4 @@
+
 import React from "react";
 import {Routes , Route} from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
@@ -16,6 +17,20 @@ import Login from './Pages/Login';
 import Register from './Pages/Register';
 import Navbar from './components/Navbar';
 import AdminDashboard from './Pages/AdminDashboard';
+
+
+
+
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import HomeMaterial from './pages/HomeMaterial';
+import CreateMaterial from './pages/CreateMaterial';
+import ShowMaterial from './pages/ShowMaterial';
+ import EditMaterial from './pages/EditMaterial';
+// import DeleteMaterial from './pages/DeleteMaterial';
+import BuyMaterial from './pages/BuyMaterial';
+
+
 
 const App = () => {
   return (
@@ -41,6 +56,15 @@ const App = () => {
         <Route path="/aitreatment" element={<AiRecomendationForm />} />
         <Route path="/myinquiries" element={<MyInquiries />} />
         <Route path="/userprofile" element={<UserProfile />} />
+          
+          
+          
+          <Route path='/' element={<HomeMaterial />} />
+      <Route path='/materials/create' element={<CreateMaterial />} />
+      <Route path='/materials/details/:id' element={<ShowMaterial />} />
+     <Route path='/materials/edit/:id' element={<EditMaterial />} /> 
+      {/* <Route path='/materials/delete/:id' element={<DeleteMaterial />} /> */}
+      <Route path='/materials/buy' element={<BuyMaterial />} />
       </Routes>
       </SnackbarProvider>
    </>
@@ -48,3 +72,4 @@ const App = () => {
 };
 
 export default App;
+
