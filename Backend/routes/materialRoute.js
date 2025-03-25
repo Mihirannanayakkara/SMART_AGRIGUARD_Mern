@@ -1,5 +1,5 @@
 import express from "express";
-import { Material } from "../models/materialModel.js";
+import { Material } from "../models/MaterialModel.js";
 
 const router = express.Router();
 
