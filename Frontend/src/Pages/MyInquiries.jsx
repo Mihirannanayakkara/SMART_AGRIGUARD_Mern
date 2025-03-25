@@ -3,7 +3,6 @@ import axios from 'axios';
 import { FaEdit, FaTrash, FaEye } from 'react-icons/fa';
 import { useSnackbar } from 'notistack';
 import { useNavigate } from 'react-router-dom';
-import InquiryDetailsPopup from '../pages/InquiryDetailsPopup';
 
 const MyInquiries = () => {
   const [inquiries, setInquiries] = useState([]);
