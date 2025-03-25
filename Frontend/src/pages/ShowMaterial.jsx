@@ -1,12 +1,24 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import {
+  FaEdit,
+  FaArrowLeft,
+  FaBox,
+  FaInfoCircle,
+  FaDollarSign,
+  FaPhone,
+  FaTint,
+  FaUser,
+  FaBook,
+  FaTrash,
+  FaSeedling,
+  FaLeaf,
+} from "react-icons/fa";
 import { useSnackbar } from "notistack";
-import { FaEdit, FaTrash, FaSpinner } from "react-icons/fa";
-import BackButton from "../components/BackButton";
 
 const ShowMaterial = () => {
-  const [material, setMaterial] = useState({});
+  const [material, setMaterial] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { id } = useParams();
@@ -24,11 +36,12 @@ const ShowMaterial = () => {
       .catch((error) => {
         console.log(error);
         setLoading(false);
-        enqueueSnackbar("Error fetching material details", {
-          variant: "error",
-        });
       });
-  }, [id, enqueueSnackbar]);
+  }, [id]);
+
+  const openDeleteModal = () => {
+    setShowDeleteModal(true);
+  };
 
   const handleDelete = () => {
     setLoading(true);
@@ -51,116 +64,148 @@ const ShowMaterial = () => {
   };
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <FaSpinner className="animate-spin text-4xl text-green-600" />
-      </div>
-    );
+    return <div>Loading...</div>;
+  }
+
+  if (!material) {
+    return <div>Material not found</div>;
   }
 
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-gray-200 min-h-screen py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-        <div className="px-4 py-5 sm:px-6 bg-green-600 text-white">
-          <h2 className="text-2xl font-bold text-center">
-            {material.materialName}
-          </h2>
-        </div>
-        <div className="px-4 py-5 sm:p-6">
-          {material.image && (
-            <div className="mb-6 flex justify-center">
+    <div className="bg-gray-50 min-h-screen p-8">
+      <div className="container mx-auto">
+        {/* Back Button */}
+        <Link
+          to="/"
+          className="inline-flex items-center mb-6 text-blue-500 hover:text-blue-600"
+        >
+          <FaArrowLeft className="mr-2" />
+          Back 
+        </Link>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="md:col-span-1 bg-white shadow rounded-lg p-6">
+            <div className="mb-6">
               <img
                 src={material.image}
                 alt={material.materialName}
-                className="max-w-full h-auto rounded-lg shadow-md"
-                style={{ maxHeight: "200px" }}
+                className="w-full h-48 object-cover rounded-lg"
               />
             </div>
-          )}
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <DetailItem label="Category" value={material.category} />
-            <DetailItem
-              label="Disease Usage"
-              value={material.diseaseUsage?.join(", ")}
-            />
-            <DetailItem label="Unit Type" value={material.unitType} />
-            <DetailItem
-              label="Price Per Unit"
-              value={`Rs.${material.pricePerUnit}`}
-            />
-            <DetailItem label="Supplier Name" value={material.supplierName} />
-            <DetailItem
-              label="Supplier Contact"
-              value={material.supplierContact}
-            />
-          </div>
-          <div className="mt-6">
-            <h3 className="text-xl font-semibold text-green-700 mb-3">
-              Usage Instructions
-            </h3>
-            <p className="text-gray-700 leading-relaxed border-l-4 border-green-500 pl-4">
-              {material.usageInstructions}
-            </p>
-          </div>
-          <div className="mt-6 text-sm text-gray-500 border-t pt-4 flex justify-between">
-            <p>Created: {new Date(material.createdAt).toLocaleString()}</p>
-            <p>Last Updated: {new Date(material.updatedAt).toLocaleString()}</p>
-          </div>
-          <div className="mt-8 flex justify-end space-x-4">
-            <Link
-              to={`/materials/edit/${material._id}`}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-yellow-500 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
-            >
-              <FaEdit className="mr-2" />
-              Edit
-            </Link>
-            <button
-              onClick={() => setShowDeleteModal(true)}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-            >
-              <FaTrash className="mr-2" />
-              Delete
-            </button>
-          </div>
-        </div>
-      </div>
 
-      {/* Delete Confirmation Modal */}
-      {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">
-              Confirm Delete
-            </h2>
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to delete this material?
-            </p>
-            <div className="flex justify-end space-x-4">
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDelete}
-                className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500"
-              >
-                Delete
-              </button>
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">
+                {material.materialName}
+              </h2>
+              <p className="text-gray-600">{material.category}</p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex justify-between border-b pb-2">
+                <span className="text-gray-600 flex items-center">
+                   Disease Usage
+                </span>
+                <span className="font-medium">
+                  {material.diseaseUsage.join(", ")}
+                </span>
+              </div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="text-gray-600 flex items-center">
+                   Price per
+                  Unit
+                </span>
+                <span className="font-medium">Rs.{material.pricePerUnit}</span>
+              </div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="text-gray-600 flex items-center">
+                  Unit Type
+                </span>
+                <span className="font-medium">{material.unitType}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="md:col-span-2 space-y-6">
+            <div className="bg-white shadow rounded-lg p-6">
+              <h3 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+                <FaBook className="mr-2 text-orange-500" />
+                Usage Instructions
+              </h3>
+              <p className="text-gray-700">{material.usageInstructions}</p>
+            </div>
+
+            <div className="bg-white shadow rounded-lg p-6">
+              <h3 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
+                <FaUser className="mr-2 text-indigo-500" />
+                Supplier Details
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-gray-600">Supplier Name</p>
+                  <p className="font-medium">{material.supplierName}</p>
+                </div>
+                <div>
+                  <p className="text-gray-600">Contact Information</p>
+                  <p className="font-medium flex items-center">
+                    
+                    {material.supplierContact}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-between items-center mb-8">
+              <div className="flex items-center space-x-4"></div>
+              <div className="flex space-x-4">
+                <Link
+                  to={`/materials/edit/${id}`}
+                  className="bg-blue-500 text-white px-4 py-2 rounded flex items-center hover:bg-blue-600"
+                >
+                  <FaEdit className="mr-2" /> Edit Material
+                </Link>
+                <button
+                  onClick={openDeleteModal}
+                  className="bg-red-500 text-white px-4 py-2 rounded flex items-center hover:bg-red-600"
+                >
+                  <FaTrash className="mr-2" /> Delete Material
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      )}
+
+        {/* Delete Confirmation Modal */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+            <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+              <div className="mt-3 text-center">
+                <h3 className="text-lg leading-6 font-medium text-gray-900">
+                  Delete Confirmation
+                </h3>
+                <div className="mt-2 px-7 py-3">
+                  <p className="text-sm text-gray-500">
+                    Are you sure you want to delete this material? This action
+                    cannot be undone.
+                  </p>
+                </div>
+                <div className="items-center px-4 py-3">
+                  <button
+                    onClick={handleDelete}
+                    className="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300"
+                  >
+                    Delete
+                  </button>
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    className="mt-3 px-4 py-2 bg-gray-300 text-gray-800 text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
-
-const DetailItem = ({ label, value }) => (
-  <div>
-    <dt className="text-sm font-medium text-gray-500">{label}</dt>
-    <dd className="mt-1 text-sm text-gray-900">{value}</dd>
-  </div>
-);
-
 export default ShowMaterial;
