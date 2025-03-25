@@ -25,6 +25,10 @@ const CreateMaterial = () => {
 
   const onDrop = useCallback((acceptedFiles) => {
     const file = acceptedFiles[0];
+    if (file.size > 20 * 1024) {
+      alert("File size exceeds 20KB. Please choose a smaller image.");
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => {
       setImage(reader.result);
@@ -38,7 +42,40 @@ const CreateMaterial = () => {
     multiple: false,
   });
 
-  
+  const handlePriceChange = (e) => {
+    const value = e.target.value;
+    if (value < 0) {
+      setErrors((prev) => ({
+        ...prev,
+        pricePerUnit: "Price must be a positive number",
+      }));
+    } else {
+      setErrors((prev) => ({
+        ...prev,
+        pricePerUnit: "",
+      }));
+    }
+    setPricePerUnit(value);
+  };
+
+  const handleSupplierContactChange = (e) => {
+    const value = e.target.value;
+    const phoneRegex = /^(07|08|01)\d{8}$/;
+    if (!phoneRegex.test(value)) {
+      setErrors((prev) => ({
+        ...prev,
+        supplierContact:
+          "Please enter a valid 10-digit number starting with 07, 08 or 01",
+      }));
+    } else {
+      setErrors((prev) => ({
+        ...prev,
+        supplierContact: "",
+      }));
+    }
+    setSupplierContact(value);
+  };
+
   const handleSaveMaterial = () => {
     const data = {
       materialName,
@@ -68,12 +105,28 @@ const CreateMaterial = () => {
       });
   };
 
+  const isFormValid = () => {
+    return (
+      materialName &&
+      category &&
+      unitType &&
+      pricePerUnit &&
+      supplierName &&
+      supplierContact &&
+      usageInstructions &&
+      !errors.pricePerUnit &&
+      !errors.supplierContact &&
+      image
+    );
+  };
+
   return (
     <div className="bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-        <div className="px-4 py-5 sm:px-6 bg-green-600 text-white">
-          <h2 className="text-2xl font-bold flex items-center justify-center">
-            Add New Material
+        <div className="px-6 py-8 bg-gradient-to-r from-green-600 to-green-700 text-white">
+          <h2 className="text-3xl font-bold flex items-center justify-center">
+            <FaSeedling className="mr-4 text-4xl" />
+            Add Material
           </h2>
         </div>
         <form
@@ -90,7 +143,7 @@ const CreateMaterial = () => {
                 htmlFor="materialName"
                 className="block text-sm font-medium text-gray-700"
               >
-                Material Name
+                Material Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -108,7 +161,7 @@ const CreateMaterial = () => {
                 htmlFor="category"
                 className="block text-sm font-medium text-gray-700"
               >
-                Category
+                Category <span className="text-red-500">*</span>
               </label>
               <select
                 name="category"
@@ -128,7 +181,7 @@ const CreateMaterial = () => {
                 htmlFor="unitType"
                 className="block text-sm font-medium text-gray-700"
               >
-                Unit Type
+                Unit Type <span className="text-red-500">*</span>
               </label>
               <select
                 name="unitType"
@@ -148,23 +201,28 @@ const CreateMaterial = () => {
                 htmlFor="pricePerUnit"
                 className="block text-sm font-medium text-gray-700"
               >
-                Price Per Unit
+                Price Per Unit <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
                 name="pricePerUnit"
                 id="pricePerUnit"
                 value={pricePerUnit}
-                onChange={(e) => setPricePerUnit(e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-green-500 focus:border-green-500"
+                onChange={handlePriceChange}
+                className={`mt-1 block w-full border ${
+                  errors.pricePerUnit ? "border-red-500" : "border-gray-300"
+                } rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-green-500 focus:border-green-500`}
               />
+              {errors.pricePerUnit && (
+                <p className="text-xs text-red-500">{errors.pricePerUnit}</p>
+              )}
             </div>
             <div>
               <label
                 htmlFor="supplierName"
                 className="block text-sm font-medium text-gray-700"
               >
-                Supplier Name
+                Supplier Name <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
@@ -180,21 +238,26 @@ const CreateMaterial = () => {
                 htmlFor="supplierContact"
                 className="block text-sm font-medium text-gray-700"
               >
-                Supplier Contact
+                Supplier Contact <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
                 name="supplierContact"
                 id="supplierContact"
                 value={supplierContact}
-                onChange={(e) => setSupplierContact(e.target.value)}
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-green-500 focus:border-green-500"
+                onChange={handleSupplierContactChange}
+                className={`mt-1 block w-full border ${
+                  errors.supplierContact ? "border-red-500" : "border-gray-300"
+                } rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-green-500 focus:border-green-500`}
               />
+              {errors.supplierContact && (
+                <p className="text-xs text-red-500">{errors.supplierContact}</p>
+              )}
             </div>
           </div>
           <div className="mt-6">
             <label className="block text-sm font-medium text-gray-700">
-              Disease Usage
+              Disease Usage <span className="text-red-500">*</span>
             </label>
             <div className="mt-2 space-y-2">
               {["Plant Growth", "Insect Control", "Weed Killers"].map(
@@ -233,7 +296,7 @@ const CreateMaterial = () => {
               htmlFor="usageInstructions"
               className="block text-sm font-medium text-gray-700"
             >
-              Usage Instructions
+              Usage Instructions <span className="text-red-500">*</span>
             </label>
             <textarea
               name="usageInstructions"
@@ -249,7 +312,7 @@ const CreateMaterial = () => {
               htmlFor="image"
               className="block text-sm font-medium text-gray-700"
             >
-              Material Image
+              Material Image <span className="text-red-500">*</span>
             </label>
             <div
               {...getRootProps()}
@@ -287,7 +350,7 @@ const CreateMaterial = () => {
                   <p className="pl-1">or drag and drop</p>
                 </div>
                 <p className="text-xs text-gray-500">
-                  PNG, JPG, GIF up to 10MB
+                  PNG, JPG, JPEG up to 20KB
                 </p>
               </div>
             </div>
@@ -305,7 +368,12 @@ const CreateMaterial = () => {
           <div className="mt-8 flex justify-end">
             <button
               type="submit"
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+              disabled={!isFormValid()} // Disable button if form is not valid
+              className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                !isFormValid()
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-green-600 hover:bg-green-700"
+              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500`}
             >
               <FaSave className="mr-2" />
               Save Material
