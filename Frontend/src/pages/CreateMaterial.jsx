@@ -7,6 +7,7 @@ import { useSnackbar } from "notistack";
 import { useDropzone } from "react-dropzone";
 import { FaSave, FaUpload, FaSeedling } from "react-icons/fa";
 
+
 const CreateMaterial = () => {
   const [materialName, setMaterialName] = useState("");
   const [category, setCategory] = useState("");
@@ -121,14 +122,15 @@ const CreateMaterial = () => {
   };
 
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+    <div 
+      className="min-h-screen py-8 px-4 sm:px-6 lg:px-8 bg-cover bg-center bg-no-repeat bg-fixed"
+      style={{ 
+        backgroundImage: `url('https://5.imimg.com/data5/LD/EG/NV/SELLER-69924296/cotton-slub-fabric-1000x1000.jpg')`,
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        backgroundBlendMode: 'overlay'
+      }}
+    >
       <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-        <div className="px-6 py-8 bg-gradient-to-r from-green-600 to-green-700 text-white">
-          <h2 className="text-3xl font-bold flex items-center justify-center">
-            <FaSeedling className="mr-4 text-4xl" />
-            Add Material
-          </h2>
-        </div>
         <form
           onSubmit={(e) => {
             e.preventDefault();
