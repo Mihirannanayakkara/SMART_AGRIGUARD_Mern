@@ -1,11 +1,14 @@
 import React from "react";
 import {Routes , Route} from 'react-router-dom';
+import { SnackbarProvider } from 'notistack';
 
 import CreateForm from './Pages/CreateForm';
 import UserProfile from "./Pages/UserProfile";
 import AiRecomendationForm from './Pages/AiRecomendationForm';
 import UpdateSubmittedForm from "./Pages/UpdateSubmittedForm";
 import DeleteSubmittedForm from "./Pages/DeleteSubmittedForm";
+import MyInquiries from './Pages/MyInquiries';
+
 
 
 import Home from './Pages/Home';
@@ -17,6 +20,7 @@ import AdminDashboard from './Pages/AdminDashboard';
 const App = () => {
   return (
     <>
+    <SnackbarProvider maxSnack={3}>
       <Navbar />
       <Routes>
         {/* Main App Routes */}
@@ -35,8 +39,10 @@ const App = () => {
         <Route path="/updateinquiry/:id" element={<UpdateSubmittedForm />} />
         <Route path="/deleteinquiry/:id" element={<DeleteSubmittedForm />} />
         <Route path="/aitreatment" element={<AiRecomendationForm />} />
+        <Route path="/myinquiries" element={<MyInquiries />} />
         <Route path="/userprofile" element={<UserProfile />} />
       </Routes>
+      </SnackbarProvider>
    </>
   );
 };

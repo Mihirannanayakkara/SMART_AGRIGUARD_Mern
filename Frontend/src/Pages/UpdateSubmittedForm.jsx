@@ -13,10 +13,37 @@ export const UpdateSubmittedForm = () => {
   const [issueDescription, setIssueDescription] = useState("");
 
   const { id } = useParams();
-  useEffect (() => {
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+  const [loading, setLoading] = useState(false);
+
+  const [fullnameError, setFullnameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [locationError, setLocationError] = useState("");
+  const [contactNumberError, setContactNumberError] = useState("");
+
+  // Fetch token (from localStorage, sessionStorage, or context)
+  const token = localStorage.getItem("token"); // Assuming token is stored in localStorage
+
+  useEffect(() => {
+    console.log("Form ID:", id);
+
+    const userData = JSON.parse(localStorage.getItem('user'));
+    if (!userData || !userData.token) {
+      enqueueSnackbar("No valid user session found. Please login again.", { variant: "error" });
+      navigate("/");
+      return;
+    }
+
     setLoading(true);
-    axios.get(`http://localhost:5557/farmer/${id}`)
-    .then((response) => {
+    axios
+      .get(`http://localhost:5557/farmer/${id}`, {
+        headers: {
+          Authorization: `Bearer ${userData.token}`, // Add token to the header
+        },
+      })
+      .then((response) => {
+        console.log(response.data);
         setFullname(response.data.farmer.fullname);
         setEmail(response.data.farmer.email);
         setLocation(response.data.farmer.location);
@@ -25,22 +52,15 @@ export const UpdateSubmittedForm = () => {
         setDiseaseName(response.data.farmer.diseaseName);
         setIssueDescription(response.data.farmer.issueDescription);
         setLoading(false);
-  
-    }).catch((error) => {
+      })
+      .catch((error) => {
         setLoading(false);
         enqueueSnackbar("Error fetching data", { variant: "error" });
         console.log(error);
-    });
-  }, [id]);
+      });
+  }, [id, token]);
 
-  const [fullnameError, setFullnameError] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [locationError, setLocationError] = useState("");
-  const [contactNumberError, setContactNumberError] = useState("");
- 
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
+
 
   const handleSaveForm = () => {
     if (
@@ -71,23 +91,35 @@ export const UpdateSubmittedForm = () => {
       diseaseName,
       issueDescription,
     };
+
+    const userData = JSON.parse(localStorage.getItem('user'));
+    if (!userData || !userData.token) {
+      enqueueSnackbar("No valid user session found.", { variant: "error" });
+      navigate("/");
+      return;
+    }
+
     setLoading(true);
     axios
-      .put(`http://localhost:5557/farmer/${id}`, data)
+      .put(`http://localhost:5557/farmer/${id}`, data, {
+        headers: {
+          Authorization: `Bearer ${userData.token}`, // Add token to the header
+        },
+      })
       .then(() => {
         setLoading(false);
-        enqueueSnackbar("form submission Successfully!!", {
+        enqueueSnackbar("Form submitted successfully!", {
           variant: "success",
         });
         navigate("/");
       })
       .catch((error) => {
         setLoading(false);
-
-        enqueueSnackbar("Error", { variant: "error" });
+        enqueueSnackbar("Error submitting form", { variant: "error" });
         console.log(error);
       });
   };
+
 
   const handleFullnameChange = (e) => {
     const { value } = e.target;
