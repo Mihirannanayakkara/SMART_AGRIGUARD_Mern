@@ -4,6 +4,7 @@ import { FaLeaf, FaSearch, FaMobileAlt } from 'react-icons/fa';
 import { RiPlantLine } from 'react-icons/ri';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import WhatWeOffer from '../components/WhatWeOffer';
 
 const Home = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -63,6 +64,8 @@ const Home = () => {
         </div>
       </section>
 
+      <WhatWeOffer />
+
       {/* Features Section */}
       <section ref={featuresRef} className="py-20 bg-green-50">
         <div className="container mx-auto px-4">
@@ -88,7 +91,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-
+      
       {/* How It Works Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
@@ -115,6 +118,8 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      
 
       {/* Call to Action Section */}
       <section className="py-6 bg-green-800 text-white">
