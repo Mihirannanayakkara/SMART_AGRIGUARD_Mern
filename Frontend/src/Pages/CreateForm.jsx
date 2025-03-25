@@ -50,20 +50,32 @@ export const CreateForm = () => {
       diseaseName,
       issueDescription,
     };
+  
+    const userData = JSON.parse(localStorage.getItem('user'));
+    if (!userData || !userData.token) {
+      enqueueSnackbar("No valid user session found.", { variant: "error" });
+      return;
+    }
+
     setLoading(true);
+
+    // Send POST request with Authorization header
     axios
-      .post("http://localhost:5557/farmer", data)
+      .post("http://localhost:5557/farmer", data, {
+        headers: {
+          'Authorization': `Bearer ${userData.token}`, // Include the token in the headers
+        }
+      })
       .then(() => {
         setLoading(false);
-        enqueueSnackbar("form submission Successfully!!", {
+        enqueueSnackbar("Form submitted successfully!", {
           variant: "success",
         });
         navigate("/");
       })
       .catch((error) => {
         setLoading(false);
-
-        enqueueSnackbar("Error", { variant: "error" });
+        enqueueSnackbar("Error submitting form.", { variant: "error" });
         console.log(error);
       });
   };

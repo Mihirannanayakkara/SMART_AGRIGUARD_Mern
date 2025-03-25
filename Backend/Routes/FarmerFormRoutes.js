@@ -1,11 +1,12 @@
 import express from "express";
 import { Farmer } from "../Models/farmerModel.js";
+import authenticateToken, { authorize } from '../Middleware/authMiddleware.js';
 
 
 const router = express.Router();
 
 //Route for save a new inquary
-router.post('/', async (request,response)=>{
+router.post('/', authenticateToken, async (request,response)=>{
     try{
         if(
             !request.body.fullname ||
@@ -22,6 +23,7 @@ router.post('/', async (request,response)=>{
         }
   
         const newFarmerForm = {
+            userId: request.user.id,
             fullname: request.body.fullname,
             email: request.body.email,
             location: request.body.location,
@@ -44,9 +46,9 @@ router.post('/', async (request,response)=>{
 
 
  //get all farmers inquary
-router.get('/', async (request , response)=>{
+router.get('/', authenticateToken, async (request , response)=>{
     try{
-        const farmers = await Farmer.find({});
+        const farmers = await Farmer.find({userId: request.user.id});
         return response.status(200).json({
             count:farmers.length,
             data:farmers
@@ -61,25 +63,35 @@ router.get('/', async (request , response)=>{
 
 
 //get farmer inquery by id
-router.get('/:id', async (request , response)=>{
+router.get('/:id', authenticateToken, async (request , response)=>{
     try{
 
         const {id} = request.params;
 
         const farmer = await Farmer.findById(id);
 
-        return response.status(200).json({farmer});
+        if (!farmer) {
+            return response.status(404).json({ message: 'Farmer inquiry not found' });
+        }
 
-    } catch(error){
-        console.log(error.message);
-        response.status(500).send({message:error.message});
+        
+        if (farmer.userId.toString() !== request.user.id) {
+            return response.status(403).json({ message: 'Unauthorized to access this inquiry' });
+        }
+
+        
+        return response.status(200).json({ farmer });
+
+    } catch (error) {
+        console.error(error.message);
+        response.status(500).send({ message: error.message });
     }
 });
 
 
 
 //update an inquery
-router.put('/:id', async(request,response)=>{
+router.put('/:id', authenticateToken, async(request,response)=>{
     try{
         if(
             !request.body.fullname ||
@@ -97,40 +109,54 @@ router.put('/:id', async(request,response)=>{
 
         const {id} = request.params;
 
-        const result =  await Farmer.findByIdAndUpdate(id,request.body);
+        const farmerInquiry  =  await Farmer.findById(id);
 
-        if(!result){
-            return response.status(404).json({message:'Farmer inqury not found'});
-        }
-        else{
-            return response.status(200).send({message:'Farmer inquiry updated successfully'});
+        if (!farmerInquiry) {
+            return response.status(404).json({ message: 'Farmer inquiry not found' });
         }
 
-    }catch(error){
-        console.log(error.message);
-        response.status(500).send({message:error.message});
+        // Check if the logged-in user is the owner of the inquiry
+        if (farmerInquiry.userId.toString() !== request.user.id) {
+            return response.status(403).json({ message: 'Unauthorized to update this inquiry' });
+        }
+
+        // Update the farmer inquiry
+        const result = await Farmer.findByIdAndUpdate(id, request.body, { new: true });
+
+        return response.status(200).send({
+            message: 'Farmer inquiry updated successfully',
+            data: result
+        });
+
+    } catch (error) {
+        console.error(error.message);
+        response.status(500).send({ message: error.message });
     }
 });
 
 
 
 //delete an inquery
-router.delete('/:id', async (request,response)=>{
+router.delete('/:id', authenticateToken, async (request,response)=>{
     try{
 
         const {id} = request.params;
 
-        const result = await Farmer.findByIdAndDelete(id);
-        if(!result){
-            return response.status(404).json({message:'farmer not found'});
+        const inquiry = await Farmer.findById(id);
+        if (!inquiry) {
+            return response.status(404).json({ message: 'Inquiry not found' });
         }
-        else{
-            return response.status(200).send({message:'farmer inqury deleted successfully'});
-        }
-    }catch(error){
-        console.log(error.message);
-        response.status(500).send({message:error.message});
-    }
-})
 
-  export default router;
+        if (inquiry.userId.toString() !== request.user.id) {
+            return response.status(403).json({ message: 'Unauthorized to delete this inquiry' });
+        }
+
+        await Farmer.findByIdAndDelete(id);
+        return response.status(200).json({ message: 'Inquiry deleted successfully' });
+    } catch (error) {
+        console.error(error.message);
+        response.status(500).send({ message: error.message });
+    }
+});
+
+export default router;

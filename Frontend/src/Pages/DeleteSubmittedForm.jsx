@@ -13,10 +13,22 @@ const DeleteSubmittedForm = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem('user'));
+    if (!userData || !userData.token) {
+      enqueueSnackbar("No valid user session found. Please login again.", { variant: "error" });
+      navigate("/");
+      return;
+    }
+  
     setLoading(true);
-    axios.get(`http://localhost:5557/farmer/${id}`)
+    axios
+      .get(`http://localhost:5557/farmer/${id}`, {
+        headers: {
+          Authorization: `Bearer ${userData.token}`, // Add token to the header
+        },
+      })
       .then((response) => {
-        setFormData(response.data.farmer);
+        setFormData(response.data.farmer); // Update formData after successful fetch
         setLoading(false);
       })
       .catch((error) => {
@@ -24,11 +36,25 @@ const DeleteSubmittedForm = () => {
         enqueueSnackbar("Error fetching form data", { variant: "error" });
         console.log(error);
       });
-  }, [id, enqueueSnackbar]);
+  }, [id, enqueueSnackbar, navigate]);
+  
 
   const handleDelete = () => {
     setLoading(true);
-    axios.delete(`http://localhost:5557/farmer/${id}`)
+  
+    const userData = JSON.parse(localStorage.getItem('user'));
+    if (!userData || !userData.token) {
+      enqueueSnackbar("No valid user session found. Please login again.", { variant: "error" });
+      navigate("/");
+      return;
+    }
+  
+    axios
+      .delete(`http://localhost:5557/farmer/${id}`, {
+        headers: {
+          Authorization: `Bearer ${userData.token}`, // Add the token to the header
+        },
+      })
       .then(() => {
         setLoading(false);
         enqueueSnackbar("Form deleted successfully", { variant: "success" });
@@ -40,7 +66,7 @@ const DeleteSubmittedForm = () => {
         console.log(error);
       });
   };
-
+  
   const handleCancel = () => {
     navigate("/");
   };
