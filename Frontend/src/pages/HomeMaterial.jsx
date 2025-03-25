@@ -1,22 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Spinner from '../components/Spinner';
-import { Link } from 'react-router-dom';
-import { MdOutlineAddBox, MdSearch } from 'react-icons/md';
-import { FaSort,FaEye  } from 'react-icons/fa';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import Spinner from "../components/Spinner";
+import { Link } from "react-router-dom";
+import { MdOutlineAddBox, MdSearch } from "react-icons/md";
+import { FaSort, FaEye } from "react-icons/fa";
 
 const HomeMaterial = () => {
   const [materials, setMaterials] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortField, setSortField] = useState('materialName');
-  const [sortOrder, setSortOrder] = useState('asc');
-  const [filterCategory, setFilterCategory] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortField, setSortField] = useState("materialName");
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [filterCategory, setFilterCategory] = useState("");
 
   useEffect(() => {
     setLoading(true);
     axios
-      .get('http://localhost:4000/materials')
+      .get("http://localhost:4000/materials")
       .then((response) => {
         setMaterials(response.data.data);
         setLoading(false);
@@ -29,32 +29,49 @@ const HomeMaterial = () => {
 
   const handleSort = (field) => {
     if (field === sortField) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     } else {
       setSortField(field);
-      setSortOrder('asc');
+      setSortOrder("asc");
     }
   };
 
   const filteredAndSortedMaterials = materials
-    .filter((material) =>
-      material.materialName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (filterCategory === '' || material.category === filterCategory)
+    .filter(
+      (material) =>
+        material.materialName
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) &&
+        (filterCategory === "" || material.category === filterCategory)
     )
     .sort((a, b) => {
-      if (a[sortField] < b[sortField]) return sortOrder === 'asc' ? -1 : 1;
-      if (a[sortField] > b[sortField]) return sortOrder === 'asc' ? 1 : -1;
+      if (a[sortField] < b[sortField]) return sortOrder === "asc" ? -1 : 1;
+      if (a[sortField] > b[sortField]) return sortOrder === "asc" ? 1 : -1;
       return 0;
     });
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-semibold text-gray-800">Agricultural Materials</h1>
-        <Link to='/materials/create' className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors flex items-center">
-          <MdOutlineAddBox className="mr-2" />
-          Add Material
-        </Link>
+        <h1 className="text-3xl font-semibold text-gray-800">
+          Agricultural Materials
+        </h1>
+        <div className="flex space-x-4">
+          {" "}
+          {/* Wrapper div to align buttons */}
+          <Link
+            to="/materials/buy"
+            className="bg-white text-green-500 px-4 py-2 rounded border border-green-500 hover:bg-green-500 hover:text-white transition-colors flex items-center"
+          >
+            Buy
+          </Link>
+          <Link
+            to="/materials/create"
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors flex items-center"
+          >
+            Add a new Material
+          </Link>
+        </div>
       </div>
 
       <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -79,14 +96,14 @@ const HomeMaterial = () => {
           <option value="Herbicide">Herbicide</option>
         </select>
         <button
-          onClick={() => handleSort('materialName')}
+          onClick={() => handleSort("materialName")}
           className="p-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors flex items-center"
         >
           <FaSort className="mr-2" />
           Sort by Name
         </button>
         <button
-          onClick={() => handleSort('pricePerUnit')}
+          onClick={() => handleSort("pricePerUnit")}
           className="p-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors flex items-center"
         >
           <FaSort className="mr-2" />
@@ -99,13 +116,22 @@ const HomeMaterial = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredAndSortedMaterials.map((material) => (
-            <div key={material._id} className="bg-white rounded-lg shadow-md overflow-hidden flex">
+            <div
+              key={material._id}
+              className="bg-white rounded-lg shadow-md overflow-hidden flex"
+            >
               <div className="p-4 flex-1">
-                <h2 className="text-xl font-semibold mb-2 text-gray-800">{material.materialName}</h2>
-                <p className="text-gray-600 mb-2">Category: {material.category}</p>
-                <p className="text-gray-600 mb-4">Price Per Unit: Rs.{material.pricePerUnit}/{material.unitType}</p>
-                <Link 
-                  to={`/materials/details/${material._id}`} 
+                <h2 className="text-xl font-semibold mb-2 text-gray-800">
+                  {material.materialName}
+                </h2>
+                <p className="text-gray-600 mb-2">
+                  Category: {material.category}
+                </p>
+                <p className="text-gray-600 mb-4">
+                  Price Per Unit: Rs.{material.pricePerUnit}/{material.unitType}
+                </p>
+                <Link
+                  to={`/materials/details/${material._id}`}
                   className="inline-flex items-center text-green-600 hover:text-green-800 transition-colors"
                 >
                   <FaEye className="text-xl" />
@@ -113,9 +139,9 @@ const HomeMaterial = () => {
               </div>
               <div className="w-1/3 bg-gray-200">
                 {material.image ? (
-                  <img 
-                    src={material.image} 
-                    alt={material.materialName} 
+                  <img
+                    src={material.image}
+                    alt={material.materialName}
                     className="w-full h-full object-cover"
                   />
                 ) : (
@@ -131,7 +157,9 @@ const HomeMaterial = () => {
 
       {!loading && filteredAndSortedMaterials.length === 0 && (
         <div className="text-center py-8">
-          <p className="text-xl text-gray-600">No materials found. Start by adding a new material.</p>
+          <p className="text-xl text-gray-600">
+            No materials found. Start by adding a new material.
+          </p>
         </div>
       )}
     </div>
