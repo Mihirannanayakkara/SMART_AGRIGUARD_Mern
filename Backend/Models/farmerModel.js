@@ -2,21 +2,24 @@ import mongoose from "mongoose";
 
 const farmerSchema = mongoose.Schema(
     {
+        userId: {  
+            type: mongoose.Schema.Types.ObjectId,  
+            ref: "User", // Reference to the User model  
+            required: true  
+        },
         fullname: {
             type: String,
             required: true,
-            match: /^[A-Za-z]+$/,
+            match: /^[A-Za-z]+(?: [A-Za-z]+)*$/,
         },
         email: {
             type: String,
-            required:true,
-            unique: true,
+            required:true
 
         },
         location: {
             type: String,
-            required:true,
-            unique: true,
+            required:true
 
         },
         contactNumber: {

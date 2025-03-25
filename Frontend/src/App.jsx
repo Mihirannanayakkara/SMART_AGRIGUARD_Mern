@@ -1,6 +1,5 @@
 import React from "react";
 import {Routes , Route} from 'react-router-dom';
-import Navbar from "./Components/Navbar";
 
 import CreateForm from './Pages/CreateForm';
 import UserProfile from "./Pages/UserProfile";
@@ -12,7 +11,7 @@ import DeleteSubmittedForm from "./Pages/DeleteSubmittedForm";
 import Home from './Pages/Home';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
-import Navbar from './Components/Navbar';
+import Navbar from './components/Navbar';
 import AdminDashboard from './Pages/AdminDashboard';
 
 const App = () => {
