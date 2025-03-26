@@ -23,12 +23,14 @@ import AdminDashboard from './Pages/AdminDashboard';
 
 
 
+
 import HomeMaterial from './pages/HomeMaterial';
 import CreateMaterial from './pages/CreateMaterial';
 import ShowMaterial from './pages/ShowMaterial';
  import EditMaterial from './pages/EditMaterial';
 // import DeleteMaterial from './pages/DeleteMaterial';
 import BuyMaterial from './pages/BuyMaterial';
+import HomeAfterLogin from './Pages/HomeAfterLogin';
 
 
 
@@ -42,12 +44,14 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/loghome" element={<HomeAfterLogin />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/users" element={<AdminDashboard />} />
         <Route path="/admin/articles" element={<AdminDashboard />} />
         <Route path="/admin/articles/create" element={<AdminDashboard />} />
         <Route path="/admin/analytics" element={<AdminDashboard />} />
         <Route path="/admin/settings" element={<AdminDashboard />} />
+        
 
         {/* Inquiry Form & AI Recommendation Routes */}
         <Route path="/createinquiry" element={<CreateForm />} />

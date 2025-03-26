@@ -5,6 +5,8 @@ import { FaUsers, FaNewspaper, FaChartPie, FaEye, FaPlus, FaEdit } from 'react-i
 import AdminSidebar from '../components/AdminSidebar';
 import StatsCard from '../components/StatsCard';
 import UserStatsChart from '../components/UserStatsChart';
+import ArticleCreation from '../components/ArticleCreation';
+import ArticleManagement from '../components/ArticleManagement';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -17,6 +19,8 @@ const AdminDashboard = () => {
   });
   const [loading, setLoading] = useState(true);
   const [recentActivities, setRecentActivities] = useState([]);
+  const [showArticleCreation, setShowArticleCreation] = useState(false);
+  const [showArticleManagement, setShowArticleManagement] = useState(false);
 
   useEffect(() => {
     console.log("Raw user data:", localStorage.getItem('user'));
@@ -177,14 +181,13 @@ const AdminDashboard = () => {
             </motion.div>
           </div>
           
-          {/* Quick Actions Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
               className="bg-white p-6 rounded-xl shadow-lg"
-              onClick={() => navigate('/admin/articles/create')}
+              onClick={() => setShowArticleCreation(true)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -204,7 +207,7 @@ const AdminDashboard = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.5 }}
               className="bg-white p-6 rounded-xl shadow-lg"
-              onClick={() => navigate('/admin/articles')}
+              onClick={() => setShowArticleManagement(true)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -221,11 +224,23 @@ const AdminDashboard = () => {
           </div>
         </div>
         
+        
         {/* Footer */}
         <footer className="p-6 text-center text-gray-500 text-sm">
           <p>© 2023 AgriGuard Admin Dashboard. All rights reserved.</p>
         </footer>
       </div>
+         {/* Article Creation Modal */}
+      <ArticleCreation
+        isOpen={showArticleCreation}
+        onClose={() => setShowArticleCreation(false)}
+      />
+
+      {/* Article Management Modal */}
+      <ArticleManagement
+        isOpen={showArticleManagement}
+        onClose={() => setShowArticleManagement(false)}
+      />
     </div>
   );
 };

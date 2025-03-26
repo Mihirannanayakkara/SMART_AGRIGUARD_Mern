@@ -7,6 +7,7 @@ import AiTreatmentRoute from "./Routes/AiTreatmentRoute.js";
 import userRoutes from "./Routes/userRoutes.js"; 
 import testRoute from "./Routes/testRoute.js";  
 import materialRoute from './routes/materialRoute.js'; 
+import articleRoutes from './Routes/articleRoutes.js';
 
 
 const app = express();
@@ -45,6 +46,8 @@ app.use("/api/test", testRoute);
 app.use("/farmer", FarmerFormRoute);
 app.use("/ai", AiTreatmentRoute);
 
+//Article Routes
+app.use('/api/articles', articleRoutes);
 
 mongoose
   .connect(mongoDBURL)

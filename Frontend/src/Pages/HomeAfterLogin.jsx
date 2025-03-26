@@ -1,0 +1,232 @@
+import React, { useRef, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaLeaf, FaArrowDown, FaCamera, FaCloudUploadAlt, FaRobot, FaBullhorn } from 'react-icons/fa';
+import { useEffect } from 'react';
+import axios from 'axios';
+const HomeAfterLogin = () => {
+  const scanRef = useRef(null);
+  const [showScanModal, setShowScanModal] = useState(false);
+  const [materials, setMaterials] = useState([]);
+
+  const scrollToScan = () => {
+    scanRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    const fetchMaterials = async () => {
+      try {
+        const response = await axios.get('http://localhost:5557/materials');
+        setMaterials(response.data.data);
+      } catch (error) {
+        console.error('Error fetching materials:', error);
+      }
+    };
+  
+    fetchMaterials();
+  }, []);
+
+
+  return (
+    <div className="min-h-screen bg-cover bg-center" style={{backgroundImage: "url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"}}>
+      <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+      
+      {/* Introducing Keyword */}
+      <motion.div 
+        initial={{ opacity: 0, x: -50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8 }}
+        className="absolute top-8 left-8 text-white font-bold text-4xl"
+      >
+        AgriGuard
+      </motion.div>
+
+      {/* Newly Added Feature */}
+      <motion.div 
+        initial={{ opacity: 0, y: -50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.5 }}
+        className="absolute top-8 right-8 bg-yellow-400 text-black p-3 rounded-lg shadow-lg max-w-xs"
+      >
+        <h3 className="text-sm font-bold mb-1 flex items-center">
+          <FaBullhorn className="mr-2" /> New Feature
+        </h3>
+        <p className="text-xs">
+          Advanced disease prediction model now available!
+        </p>
+      </motion.div>
+
+      {/* Main Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center h-screen text-white">
+        <motion.h1 
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-6xl font-bold mb-8 text-center"
+        >
+          Identify Plant Diseases
+        </motion.h1>
+        
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+          className="text-xl mb-8 text-center max-w-2xl"
+        >
+          Harness the power of AI to protect your crops. Quick, accurate, and easy-to-use plant disease detection at your fingertips.
+        </motion.p>
+        
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={scrollToScan}
+          className="bg-green-500 text-white px-8 py-4 rounded-full text-xl font-semibold hover:bg-green-600 transition duration-300 flex items-center"
+        >
+          <FaLeaf className="mr-2" /> Scan Disease
+        </motion.button>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 1 }}
+          className="absolute bottom-8"
+        >
+          <FaArrowDown className="text-4xl animate-bounce" />
+        </motion.div>
+      </div>
+
+      {/* AI Scan Section */}
+      <div ref={scanRef} className="min-h-screen bg-gray-100 flex items-center justify-center p-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="bg-white rounded-3xl shadow-2xl p-12 w-full max-w-7xl"
+        >
+          <h2 className="text-4xl font-bold mb-8 text-center text-green-600">AI Scan Your Plant</h2>
+          
+          <div className="flex items-center justify-center mb-8">
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              onClick={() => setShowScanModal(true)}
+              className="w-64 h-64 bg-green-100 rounded-full flex items-center justify-center cursor-pointer shadow-lg"
+            >
+              <FaCamera className="text-6xl text-green-500" />
+            </motion.div>
+          </div>
+
+          <p className="text-center text-gray-600 mb-12">
+            Click on the circle above or drag and drop your plant image here to start AI scanning.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            {[
+              { icon: FaCamera, title: 'Quick Detection', description: 'Instant results with our advanced image recognition.' },
+              { icon: FaRobot, title: 'AI-Powered Analysis', description: 'Cutting-edge AI algorithms for accurate diagnosis.' },
+              { icon: FaLeaf, title: 'Treatment Recommendations', description: 'Get tailored advice to treat plant diseases effectively.' }
+            ].map((feature, index) => (
+              <motion.div 
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 * index, duration: 0.5 }}
+                className="bg-green-50 p-6 rounded-xl text-center shadow-md"
+              >
+                <feature.icon className="text-4xl text-green-500 mb-4 mx-auto" />
+                <h3 className="text-xl font-semibold mb-2 text-green-700">{feature.title}</h3>
+                <p className="text-gray-600">{feature.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+
+ {/* Available Supplies Section */}
+<div className="bg-gray-100 py-16">
+  <div className="container mx-auto px-4">
+    <h2 className="text-4xl font-bold text-center mb-12 text-green-600">Featured Plant Medicines</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+      {materials.slice(0, 4).map((material, index) => (
+        <motion.div
+          key={material._id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: index * 0.1 }}
+          className="bg-white rounded-lg shadow-md overflow-hidden flex"
+        >
+          <div className="w-1/3 bg-green-100 flex items-center justify-center p-4">
+            <img 
+              src={material.image || 'https://via.placeholder.com/100x100'}
+              alt={material.materialName}
+              className="w-24 h-24 object-cover rounded-full"
+            />
+          </div>
+          <div className="w-2/3 p-6">
+            <h3 className="text-xl font-semibold mb-2 text-green-700">{material.materialName}</h3>
+            <p className="text-gray-600 mb-1 text-sm">Category: {material.category}</p>
+            <p className="text-gray-600 mb-3 text-sm">Usage: {material.diseaseUsage}</p>
+            <div className="flex justify-between items-center">
+              <span className="text-lg font-bold text-green-600">${material.pricePerUnit}/{material.unitType}</span>
+              <button className="bg-green-500 text-white px-4 py-2 rounded-full text-sm hover:bg-green-600 transition duration-300">
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+    <div className="text-center mt-12">
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        className="bg-transparent border-2 border-green-600 text-green-600 px-8 py-3 rounded-full text-lg font-semibold hover:bg-green-600 hover:text-white transition duration-300"
+      >
+        Explore All Medicines
+      </motion.button>
+    </div>
+  </div>
+</div>
+      {/* 3D Floating Scan Modal */}
+      <AnimatePresence>
+        {showScanModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            onClick={() => setShowScanModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, rotateY: 90 }}
+              animate={{ scale: 1, rotateY: 0 }}
+              exit={{ scale: 0.8, rotateY: 90 }}
+              transition={{ type: 'spring', damping: 15 }}
+              className="bg-white p-8 rounded-2xl shadow-2xl max-w-md w-full text-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="text-2xl font-bold mb-4 text-green-600">Scan Your Plant</h3>
+              <p className="text-gray-600 mb-6">Choose a method to upload your plant image for analysis</p>
+              <div className="flex justify-center space-x-4">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-green-500 text-white px-4 py-2 rounded-lg flex items-center"
+                >
+                  <FaCamera className="mr-2" /> Take Photo
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center"
+                >
+                  <FaCloudUploadAlt className="mr-2" /> Upload Image
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+export default HomeAfterLogin;
