@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef  } from 'react';
 import { motion } from 'framer-motion';
 import { FaLeaf, FaFlask, FaMapMarkedAlt, FaStore, FaBook } from 'react-icons/fa';
 import FeaturePopup from './FeaturePopup';
@@ -23,7 +23,7 @@ const FeatureCircle = ({ Icon, title, description, onClick }) => {
   );
 };
 
-const WhatWeOffer = () => {
+const WhatWeOffer = forwardRef((props, ref) => {
   const [selectedFeature, setSelectedFeature] = useState(null);
 
   const features = [
@@ -55,7 +55,7 @@ const WhatWeOffer = () => {
   ];
 
   return (
-    <section className="py-16 bg-gray-50">
+    <section ref={ref} className="py-16 bg-gray-50">
       <div className="container mx-auto px-4">
         <h2 className="text-4xl font-bold text-center mb-12 text-gray-800">What We Offer</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
@@ -78,6 +78,6 @@ const WhatWeOffer = () => {
       )}
     </section>
   );
-};
+});
 
 export default WhatWeOffer;
