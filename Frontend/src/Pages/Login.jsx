@@ -41,6 +41,9 @@ const Login = () => {
           case 'admin':
             navigate('/admin');
             break;
+          case 'manager':
+            navigate('/manager-dashboard');
+            break;  
           case 'farmer':
           case 'OrganicFarmer':
           case 'cropFarmer':

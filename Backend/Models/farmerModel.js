@@ -52,7 +52,20 @@ const farmerSchema = mongoose.Schema(
         requestDate: {
             type: Date,
             default: Date.now
+        },
+        reply: { 
+            type: String, 
+            default: "" 
+        },
+        latitude: { 
+            type: String, 
+            default: null 
+        },  
+        longitude: { 
+            type: String, 
+            default: null 
         }
+
     }
 );
 

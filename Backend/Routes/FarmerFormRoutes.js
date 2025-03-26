@@ -60,6 +60,22 @@ router.get('/', authenticateToken, async (request , response)=>{
     }
 });
 
+// Get all farmers' inquiries for manager/map
+router.get(
+    "/all",
+    authenticateToken,
+    authorize("manager"),
+    async (req, res) => {
+      try {
+        const farmers = await Farmer.find();
+        return res.status(200).json({ data: farmers });
+      } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ message: error.message });
+      }
+    }
+  );
+
 
 
 //get farmer inquery by id

@@ -13,7 +13,7 @@ import MyInquiries from './Pages/MyInquiries';
 
 
 import Home from './Pages/Home';
-import Login from './Pages/Login';
+import Login from './pages/Login';
 import Register from './Pages/Register';
 import Navbar from './components/Navbar';
 import AdminDashboard from './Pages/AdminDashboard';
@@ -25,6 +25,9 @@ import ShowMaterial from './Pages/ShowMaterial';
  import EditMaterial from './Pages/EditMaterial';
 // import DeleteMaterial from './pages/DeleteMaterial';
 import BuyMaterial from './Pages/BuyMaterial';
+
+import MyInquiriez from "./pages/MyInquiriez";
+import ManagerDashboard from "./pages/ManagerDashboard";
 
 
 
@@ -53,7 +56,9 @@ const App = () => {
         <Route path="/myinquiries" element={<MyInquiries />} />
         <Route path="/userprofile" element={<UserProfile />} />
           
-          
+        <Route path="/my-inquiriez" element={<MyInquiriez />} />
+        <Route path="/manager-dashboard" element={<ManagerDashboard />} />
+    
           
           <Route path='/materials' element={<HomeMaterial />} />
       <Route path='/materials/create' element={<CreateMaterial />} />
