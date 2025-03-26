@@ -55,7 +55,7 @@ const App = () => {
           
           
           
-          <Route path='/' element={<HomeMaterial />} />
+          <Route path='/materials' element={<HomeMaterial />} />
       <Route path='/materials/create' element={<CreateMaterial />} />
       <Route path='/materials/details/:id' element={<ShowMaterial />} />
      <Route path='/materials/edit/:id' element={<EditMaterial />} /> 

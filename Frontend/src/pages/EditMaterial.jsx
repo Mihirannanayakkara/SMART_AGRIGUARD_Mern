@@ -50,7 +50,7 @@ const EditMaterial = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`http://localhost:4000/materials/${id}`)
+      .get(`http://localhost:5557/materials/${id}`)
       .then((response) => {
         setFormData(response.data);
         setLoading(false);
