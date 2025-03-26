@@ -151,7 +151,7 @@ const EditMaterial = () => {
     setLoading(true);
 
     try {
-      await axios.put(`http://localhost:4000/materials/${id}`, formData);
+      await axios.put(`http://localhost:5557/materials/${id}`, formData);
       setLoading(false);
       enqueueSnackbar("Material updated successfully", { variant: "success" });
       navigate(`/materials/details/${id}`);
