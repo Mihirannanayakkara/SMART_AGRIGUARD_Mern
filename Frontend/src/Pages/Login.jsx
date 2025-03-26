@@ -43,7 +43,10 @@ const Login = () => {
             break;
           case 'manager':
             navigate('/manager-dashboard');
-            break;  
+            break;
+            case 'supplier':
+              navigate('/materials');
+              break;     
           case 'farmer':
           case 'OrganicFarmer':
           case 'cropFarmer':
