@@ -17,7 +17,7 @@ const BuyMaterial = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get('http://localhost:4000/materials')
+      .get('http://localhost:5557/materials')
       .then((response) => {
         setMaterials(response.data.data);
         setLoading(false);
