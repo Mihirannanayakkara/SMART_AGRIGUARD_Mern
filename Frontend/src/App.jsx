@@ -19,16 +19,12 @@ import Navbar from './components/Navbar';
 import AdminDashboard from './Pages/AdminDashboard';
 
 
-
-
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import HomeMaterial from './pages/HomeMaterial';
-import CreateMaterial from './pages/CreateMaterial';
-import ShowMaterial from './pages/ShowMaterial';
- import EditMaterial from './pages/EditMaterial';
+import HomeMaterial from './Pages/HomeMaterial';
+import CreateMaterial from './Pages/CreateMaterial';
+import ShowMaterial from './Pages/ShowMaterial';
+ import EditMaterial from './Pages/EditMaterial';
 // import DeleteMaterial from './pages/DeleteMaterial';
-import BuyMaterial from './pages/BuyMaterial';
+import BuyMaterial from './Pages/BuyMaterial';
 
 
 
