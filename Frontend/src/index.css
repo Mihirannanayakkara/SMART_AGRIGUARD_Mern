@@ -1,3 +1,13 @@
+/* ✅ Fix Tailwind & Leaflet import conflict */
+@import "leaflet/dist/leaflet.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ✅ Fix Leaflet Map container sizing */
+.leaflet-container {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 10px;
+}
