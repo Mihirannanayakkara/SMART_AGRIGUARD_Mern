@@ -4,6 +4,7 @@ import axios from "axios";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import BackgroundSvg from "../images/117.svg";
 import "../../src/index.css";
+import WelcomeOverlay from "../components/WelcomeOverlay";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +17,8 @@ const Login = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [userData, setUserData] = useState(null);
 
   const handleChange = (e) => {
     setFormData({
@@ -36,7 +39,16 @@ const Login = () => {
       if (response.data.token) {
         localStorage.setItem('user', JSON.stringify(response.data));
         
+        setUserData({
+          name: response.data.username,
+          role: response.data.role
+        });
+
+        setShowWelcome(true);
+        
         // Redirect based on user role
+        setTimeout(() => {
+          setShowWelcome(false);
         switch(response.data.role) {
           case 'admin':
             navigate('/admin');
@@ -54,9 +66,11 @@ const Login = () => {
           default:
             navigate('/');
         }
+      }, 2000);
       } else {
         setError('Login failed. Please try again.');
       }
+      
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
       console.error('Login error:', err);
@@ -67,6 +81,7 @@ const Login = () => {
 
   return (
     <div className="relative h-screen flex items-center justify-center">
+      <WelcomeOverlay show={showWelcome} userData={userData} />
       {/* Background Layer */}
       <div
         className="absolute inset-0"
