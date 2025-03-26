@@ -2,12 +2,12 @@ import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import { PORT, mongoDBURL } from "./config.js";
-import FarmerFormRoute from "./routes/FarmerFormRoutes.js";
+import FarmerFormRoute from "./Routes/FarmerFormRoutes.js";
 import AiTreatmentRoute from "./Routes/AiTreatmentRoute.js";
 import userRoutes from "./Routes/userRoutes.js"; 
 import testRoute from "./Routes/testRoute.js";  
-import materialRoute from './routes/materialRoute.js'; 
-import ManagerRoutes from "./routes/ManagerRoutes.js";
+import materialRoute from './Routes/materialRoute.js'; 
+import ManagerRoutes from "./Routes/ManagerRoutes.js";
 
 
 const app = express();

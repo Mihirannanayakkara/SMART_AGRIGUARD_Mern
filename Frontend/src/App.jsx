@@ -26,8 +26,8 @@ import ShowMaterial from './Pages/ShowMaterial';
 // import DeleteMaterial from './pages/DeleteMaterial';
 import BuyMaterial from './Pages/BuyMaterial';
 
-import MyInquiriez from "./pages/MyInquiriez";
-import ManagerDashboard from "./pages/ManagerDashboard";
+import MyInquiriez from "./Pages/MyInquiriez";
+import ManagerDashboard from "./Pages/ManagerDashboard";
 
 
 
