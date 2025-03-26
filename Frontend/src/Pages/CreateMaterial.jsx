@@ -91,7 +91,7 @@ const CreateMaterial = () => {
     };
     setLoading(true);
     axios
-      .post("http://localhost:4000/materials", data)
+      .post("http://localhost:5557/materials", data)
       .then(() => {
         setLoading(false);
         enqueueSnackbar("Material Created successfully", {
