@@ -1,21 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {
-  FaEdit,
-  FaArrowLeft,
-  FaBox,
-  FaInfoCircle,
-  FaDollarSign,
-  FaPhone,
-  FaTint,
-  FaUser,
-  FaBook,
-  FaTrash,
-  FaSeedling,
-  FaLeaf,
-} from "react-icons/fa";
+import { FaEdit, FaArrowLeft, FaUser, FaBook, FaTrash } from "react-icons/fa";
 import { useSnackbar } from "notistack";
+import Spinner from "../components/Spinner";
 
 const ShowMaterial = () => {
   const [material, setMaterial] = useState(null);
@@ -53,7 +41,7 @@ const ShowMaterial = () => {
         enqueueSnackbar("Material deleted successfully", {
           variant: "success",
         });
-        navigate("/");
+        navigate("/materials");
       })
       .catch((error) => {
         console.error(error);
@@ -64,7 +52,7 @@ const ShowMaterial = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Spinner />;
   }
 
   if (!material) {
@@ -76,19 +64,19 @@ const ShowMaterial = () => {
       <div className="container mx-auto">
         {/* Back Button */}
         <Link
-          to="/"
+          to="/materials"
           className="inline-flex items-center mb-6 text-blue-500 hover:text-blue-600"
         >
           <FaArrowLeft className="mr-2" />
-          Back 
+          Back
         </Link>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="md:col-span-1 bg-white shadow rounded-lg p-6">
-            <div className="mb-6">
+            <div className="mb-6 flex justify-center items-center">
               <img
                 src={material.image}
                 alt={material.materialName}
-                className="w-full h-48 object-cover rounded-lg"
+                className="w-74 h-64 object-cover rounded-xl"
               />
             </div>
 
@@ -102,7 +90,7 @@ const ShowMaterial = () => {
             <div className="space-y-4">
               <div className="flex justify-between border-b pb-2">
                 <span className="text-gray-600 flex items-center">
-                   Disease Usage
+                  Disease Usage
                 </span>
                 <span className="font-medium">
                   {material.diseaseUsage.join(", ")}
@@ -110,8 +98,7 @@ const ShowMaterial = () => {
               </div>
               <div className="flex justify-between border-b pb-2">
                 <span className="text-gray-600 flex items-center">
-                   Price per
-                  Unit
+                  Price per Unit
                 </span>
                 <span className="font-medium">Rs.{material.pricePerUnit}</span>
               </div>
@@ -146,7 +133,6 @@ const ShowMaterial = () => {
                 <div>
                   <p className="text-gray-600">Contact Information</p>
                   <p className="font-medium flex items-center">
-                    
                     {material.supplierContact}
                   </p>
                 </div>

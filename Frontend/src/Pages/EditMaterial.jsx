@@ -182,11 +182,11 @@ const EditMaterial = () => {
           className="grid grid-cols-1 md:grid-cols-3 gap-6"
         >
           <div className="md:col-span-1 bg-white shadow rounded-lg p-6">
-            <div className="mb-6">
+          <div className="mb-6 flex justify-center items-center">
               <img
                 src={formData.image}
                 alt={formData.materialName}
-                className="w-full h-48 object-cover rounded-lg"
+                 className="w-74 h-64 object-cover rounded-xl"
               />
             </div>
             <div className="space-y-4">
