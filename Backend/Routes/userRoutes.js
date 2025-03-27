@@ -75,6 +75,14 @@ router.post("/login", async (req, res) => {
     console.error("Error in login:", error);
     res.status(500).json({ message: "Server error" });
   }
+});//user count
+router.get('/count', async (req, res) => {
+  try {
+    const count = await User.countDocuments();
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching user count', error: error.message });
+  }
 });
 
 

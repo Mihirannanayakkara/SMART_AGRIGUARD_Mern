@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaTimes, FaImage, FaVideo, FaLink, FaUpload, FaTrash, FaBold, FaItalic, FaUnderline, FaCheckCircle } from 'react-icons/fa';
@@ -20,6 +19,7 @@ const ArticleCreation = ({ isOpen, onClose }) => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [wordCount, setWordCount] = useState(0);
   const [formErrors, setFormErrors] = useState({});
+  const [fileUploadProgress, setFileUploadProgress] = useState(0);
 
   const contentRef = useRef(null);
 
@@ -39,28 +39,55 @@ const ArticleCreation = ({ isOpen, onClose }) => {
     setUploadProgress(0);
     setPublishError(null);
     setFormErrors({});
+    setFileUploadProgress(0);
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    setImage(file);
     if (file) {
       const reader = new FileReader();
+      reader.onloadstart = () => setFileUploadProgress(0);
+      reader.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const progress = (event.loaded / event.total) * 100;
+          setFileUploadProgress(Math.round(progress));
+        }
+      };
       reader.onloadend = () => {
+        setImage(reader.result);
         setImagePreview(reader.result);
+        setFileUploadProgress(100);
+        setTimeout(() => setFileUploadProgress(0), 1000); // Reset progress after 1 second
       };
       reader.readAsDataURL(file);
     } else {
+      setImage(null);
       setImagePreview(null);
     }
   };
 
+  
+
   const handleVideoChange = (e) => {
     const file = e.target.files[0];
-    setVideo(file);
     if (file) {
-      setVideoPreview(URL.createObjectURL(file));
+      const reader = new FileReader();
+      reader.onloadstart = () => setFileUploadProgress(0);
+      reader.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const progress = (event.loaded / event.total) * 100;
+          setFileUploadProgress(Math.round(progress));
+        }
+      };
+      reader.onloadend = () => {
+        setVideo(reader.result);
+        setVideoPreview(URL.createObjectURL(file));
+        setFileUploadProgress(100);
+        setTimeout(() => setFileUploadProgress(0), 1000); // Reset progress after 1 second
+      };
+      reader.readAsDataURL(file);
     } else {
+      setVideo(null);
       setVideoPreview(null);
     }
   };
@@ -91,27 +118,26 @@ const ArticleCreation = ({ isOpen, onClose }) => {
   const handlePublish = async (event) => {
     event.preventDefault();
     if (!validateForm()) return;
-
+  
     setIsPublishing(true);
     setPublishError(null);
     setUploadProgress(0);
     
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('content', content);
-    formData.append('link', link);
-    if (image) formData.append('image', image);
-    if (video) formData.append('video', video);
+    const articleData = {
+      title,
+      content,
+      link,
+      image,
+      video
+    };
   
     try {
-      const response = await axios.post('http://localhost:5557/api/articles', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      const response = await axios.post('http://localhost:5557/api/articles', articleData, {
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
           setUploadProgress(percentCompleted);
         },
+        timeout: 30000 // Set a timeout of 30 seconds
       });
   
       console.log('Article published:', response.data);
@@ -123,12 +149,20 @@ const ArticleCreation = ({ isOpen, onClose }) => {
       }, 3000);
     } catch (error) {
       console.error('Error publishing article:', error);
-      setPublishError('Failed to publish article. Please try again.');
+      let errorMessage = 'Failed to publish article. Please try again.';
+      if (error.response) {
+        errorMessage = error.response.data.message || errorMessage;
+      } else if (error.request) {
+        errorMessage = 'No response from server. Please check your connection.';
+      } else {
+        errorMessage = error.message;
+      }
+      setPublishError(errorMessage);
     } finally {
       setIsPublishing(false);
     }
   };
-
+  
   return (
     <>
       <AnimatePresence>
@@ -219,6 +253,14 @@ const ArticleCreation = ({ isOpen, onClose }) => {
                     />
                   </div>
                 </div>
+                {fileUploadProgress > 0 && fileUploadProgress < 100 && (
+                  <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
+                    <div 
+                      className="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" 
+                      style={{width: `${fileUploadProgress}%`}}
+                    ></div>
+                  </div>
+                )}
                 <div className="flex space-x-4 mb-4">
                   {imagePreview && (
                     <div className="relative">
@@ -286,25 +328,6 @@ const ArticleCreation = ({ isOpen, onClose }) => {
       </AnimatePresence>
 
       <AnimatePresence>
-        {showSuccessMessage && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 flex items-center justify-center z-60"
-          >
-            <div className="bg-white rounded-lg p-8 shadow-xl flex flex-col items-center">
-              <FaCheckCircle className="text-green-500 text-5xl mb-4" />
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Article Successfully Created!</h2>
-              <p className="text-gray-600">Your article has been published.</p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Large Image Preview */}
-      <AnimatePresence>
         {showLargeImage && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -322,7 +345,6 @@ const ArticleCreation = ({ isOpen, onClose }) => {
         )}
       </AnimatePresence>
 
-      {/* Large Video Preview */}
       <AnimatePresence>
         {showLargeVideo && (
           <motion.div
@@ -338,6 +360,24 @@ const ArticleCreation = ({ isOpen, onClose }) => {
               controls
               autoPlay
             />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showSuccessMessage && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 flex items-center justify-center z-60"
+          >
+            <div className="bg-white rounded-lg p-8 shadow-xl flex flex-col items-center">
+              <FaCheckCircle className="text-green-500 text-5xl mb-4" />
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Article Successfully Created!</h2>
+              <p className="text-gray-600">Your article has been published.</p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -7,6 +7,7 @@ import StatsCard from '../components/StatsCard';
 import UserStatsChart from '../components/UserStatsChart';
 import ArticleCreation from '../components/ArticleCreation';
 import ArticleManagement from '../components/ArticleManagement';
+import axios from 'axios';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -21,6 +22,10 @@ const AdminDashboard = () => {
   const [recentActivities, setRecentActivities] = useState([]);
   const [showArticleCreation, setShowArticleCreation] = useState(false);
   const [showArticleManagement, setShowArticleManagement] = useState(false);
+  const [userCount, setUserCount] = useState(0);
+  const [articleCount, setArticleCount] = useState(0);
+
+
 
   useEffect(() => {
     console.log("Raw user data:", localStorage.getItem('user'));
@@ -34,6 +39,9 @@ const AdminDashboard = () => {
     }
      
     setUser(userData);
+
+
+    
     
     // Fetch dashboard stats from API
     const fetchStats = async () => {
@@ -41,7 +49,7 @@ const AdminDashboard = () => {
         // API call here
         // For now, we'll keep using the mock data
         setStats({
-          users: 256,
+          
           articles: 48,
           views: 12540,
           engagement: 67
@@ -65,6 +73,34 @@ const AdminDashboard = () => {
     
     fetchStats();
   }, [navigate]);
+
+ 
+  //fetch user count
+    const fetchUserCount = async () => {
+      try {
+        const response = await axios.get('http://localhost:5557/api/users/count');
+        setUserCount(response.data.count);
+      } catch (error) {
+        console.error('Error fetching user count:', error);
+      }
+    };
+
+
+  //Fetch Article Count
+  const fetchArticleCount = async () => {
+    try {
+      const response = await axios.get('http://localhost:5557/api/articles/count');
+      setArticleCount(response.data.count);
+    } catch (error) {
+      console.error('Error fetching article count:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserCount();
+    fetchArticleCount();
+  }, []);
+
     
   // Sample chart data
   const chartData = {
@@ -103,20 +139,20 @@ const AdminDashboard = () => {
           
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <StatsCard 
-              title="Total Users" 
-              value={stats.users} 
-              icon={<FaUsers size={24} className="text-white" />} 
-              color="bg-green-600"
-              onClick={() => navigate('/admin/users')}
+          <StatsCard 
+            title="Total Users" 
+            value={userCount} 
+            icon={<FaUsers size={24} className="text-white" />} 
+            color="bg-green-600"
+             onClick={() => navigate('/admin/users')}
             />
             <StatsCard 
               title="Articles Published" 
-              value={stats.articles} 
+              value={articleCount} 
               icon={<FaNewspaper size={24} className="text-white" />} 
               color="bg-blue-600"
               onClick={() => navigate('/admin/articles')}
-            />
+/>
             <StatsCard 
               title="Total Views" 
               value={stats.views.toLocaleString()} 
@@ -132,6 +168,8 @@ const AdminDashboard = () => {
               onClick={() => navigate('/admin/analytics')}
             />
           </div>
+
+          
           
           {/* Charts and Additional Content */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">

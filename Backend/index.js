@@ -8,18 +8,15 @@ import userRoutes from "./Routes/userRoutes.js";
 import testRoute from "./Routes/testRoute.js";  
 import materialRoute from './routes/materialRoute.js'; 
 import articleRoutes from './Routes/articleRoutes.js';
+import bodyParser from "body-parser";
+
 
 
 const app = express();
 
-
-
-
-
-
-
-
-
+// Increase payload size limit
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // Middleware for parsing request body
 app.use(express.json());
@@ -48,6 +45,7 @@ app.use("/ai", AiTreatmentRoute);
 
 //Article Routes
 app.use('/api/articles', articleRoutes);
+app.use('/api/users', userRoutes);
 
 mongoose
   .connect(mongoDBURL)

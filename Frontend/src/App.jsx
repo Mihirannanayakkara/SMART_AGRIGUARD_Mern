@@ -9,6 +9,8 @@ import AiRecomendationForm from './Pages/AiRecomendationForm';
 import UpdateSubmittedForm from "./Pages/UpdateSubmittedForm";
 import DeleteSubmittedForm from "./Pages/DeleteSubmittedForm";
 import MyInquiries from './Pages/MyInquiries';
+import ArticleView from './components/ArticleView';
+
 
 
 
@@ -60,6 +62,8 @@ const App = () => {
         <Route path="/aitreatment" element={<AiRecomendationForm />} />
         <Route path="/myinquiries" element={<MyInquiries />} />
         <Route path="/userprofile" element={<UserProfile />} />
+        <Route path="/articles/:id" element={<ArticleView />} />
+        <Route path="/viewarticles" element={<ArticleView />} />
           
           
           
