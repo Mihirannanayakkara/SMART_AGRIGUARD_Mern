@@ -1,14 +1,13 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSnackbar } from "notistack";
 
-const DeleteSubmittedForm = () => {
+const DeleteSubmittedForm = ({inquiryId, onClose, onDeleteSuccess}) => {
   const [formData, setFormData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   
-  const { id } = useParams();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -16,13 +15,13 @@ const DeleteSubmittedForm = () => {
     const userData = JSON.parse(localStorage.getItem('user'));
     if (!userData || !userData.token) {
       enqueueSnackbar("No valid user session found. Please login again.", { variant: "error" });
-      navigate("/");
+      onClose();
       return;
     }
   
     setLoading(true);
     axios
-      .get(`http://localhost:5557/farmer/${id}`, {
+      .get(`http://localhost:5557/farmer/${inquiryId}`, {
         headers: {
           Authorization: `Bearer ${userData.token}`, // Add token to the header
         },
@@ -35,8 +34,9 @@ const DeleteSubmittedForm = () => {
         setLoading(false);
         enqueueSnackbar("Error fetching form data", { variant: "error" });
         console.log(error);
+        onClose()
       });
-  }, [id, enqueueSnackbar, navigate]);
+  }, [inquiryId, enqueueSnackbar, navigate, onClose]);
   
 
   const handleDelete = () => {
@@ -45,12 +45,12 @@ const DeleteSubmittedForm = () => {
     const userData = JSON.parse(localStorage.getItem('user'));
     if (!userData || !userData.token) {
       enqueueSnackbar("No valid user session found. Please login again.", { variant: "error" });
-      navigate("/");
+      onClose();
       return;
     }
   
     axios
-      .delete(`http://localhost:5557/farmer/${id}`, {
+      .delete(`http://localhost:5557/farmer/${inquiryId}`, {
         headers: {
           Authorization: `Bearer ${userData.token}`, // Add the token to the header
         },
@@ -58,7 +58,7 @@ const DeleteSubmittedForm = () => {
       .then(() => {
         setLoading(false);
         enqueueSnackbar("Form deleted successfully", { variant: "success" });
-        navigate("/");
+        onDeleteSuccess();
       })
       .catch((error) => {
         setLoading(false);
@@ -68,7 +68,7 @@ const DeleteSubmittedForm = () => {
   };
   
   const handleCancel = () => {
-    navigate("/");
+    onClose();
   };
 
   if (loading && !formData) {
@@ -83,16 +83,11 @@ const DeleteSubmittedForm = () => {
   }
 
   return (
-    <div className="min-h-screen bg-cover bg-center bg-fixed" 
-    style={{ 
-      backgroundImage: "url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')",
-      backgroundColor: "rgba(243, 244, 246, 0.85)",
-      backgroundBlendMode: "overlay"
-    }}>
-      <div className="max-w-3xl mx-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
+      <div className="bg-white rounded-xl shadow-lg w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
         {!confirmDelete ? (
           <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="bg-red-600 py-6">
+            <div className="bg-red-600 py-4">
               <h1 className="text-center text-white text-3xl font-bold tracking-tight">
                 Delete Form Submission
               </h1>
@@ -101,7 +96,7 @@ const DeleteSubmittedForm = () => {
               </p>
             </div>
             
-            <div className="p-8">
+            <div className="pt-3 p-8">
               {formData && (
                 <div className="space-y-6">
                   <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
