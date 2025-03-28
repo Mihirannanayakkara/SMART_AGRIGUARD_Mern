@@ -47,6 +47,8 @@ app.use("/ai", AiTreatmentRoute);
 app.use('/api/articles', articleRoutes);
 app.use('/api/users', userRoutes);
 
+
+
 mongoose
   .connect(mongoDBURL)
   .then(() => {

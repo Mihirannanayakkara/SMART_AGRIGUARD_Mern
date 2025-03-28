@@ -18,6 +18,7 @@ import Home from './Pages/Home';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
 import Navbar from './components/Navbar';
+import LogNavBar from './components/LogingNavBar';
 import AdminDashboard from './Pages/AdminDashboard';
 
 
@@ -33,7 +34,7 @@ import ShowMaterial from './pages/ShowMaterial';
 // import DeleteMaterial from './pages/DeleteMaterial';
 import BuyMaterial from './pages/BuyMaterial';
 import HomeAfterLogin from './Pages/HomeAfterLogin';
-
+import UserManagement from './components/UserManagement';
 
 
 const App = () => {
@@ -53,7 +54,8 @@ const App = () => {
         <Route path="/admin/articles/create" element={<AdminDashboard />} />
         <Route path="/admin/analytics" element={<AdminDashboard />} />
         <Route path="/admin/settings" element={<AdminDashboard />} />
-        
+        <Route path="/lognavbar" element={<LogNavBar />} />
+        <Route path="/admin/manageusers" element={<UserManagement />} />
 
         {/* Inquiry Form & AI Recommendation Routes */}
         <Route path="/createinquiry" element={<CreateForm />} />

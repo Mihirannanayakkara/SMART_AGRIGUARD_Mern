@@ -61,10 +61,10 @@ const Login = () => {
           case 'gardener':
           case 'soilTester':
           case 'agriculturalResearcher':
-            navigate('/dashboard');
+            navigate('/loghome');
             break;
           default:
-            navigate('/dashboard');
+            navigate('/loghome');
         }
       }, 2000);
       } else {

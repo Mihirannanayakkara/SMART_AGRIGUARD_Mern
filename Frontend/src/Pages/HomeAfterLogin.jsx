@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaLeaf, FaArrowDown, FaCamera, FaCloudUploadAlt, FaRobot, FaBullhorn } from 'react-icons/fa';
 import { useEffect } from 'react';
 import axios from 'axios';
+import LogingNavBar from '../components/LogingNavBar';
 const HomeAfterLogin = () => {
   const scanRef = useRef(null);
   const [showScanModal, setShowScanModal] = useState(false);
@@ -28,6 +29,7 @@ const HomeAfterLogin = () => {
 
   return (
     <div className="min-h-screen bg-cover bg-center" style={{backgroundImage: "url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"}}>
+      <LogingNavBar />
       <div className="absolute inset-0 bg-black bg-opacity-50"></div>
       
       {/* Introducing Keyword */}
@@ -35,9 +37,9 @@ const HomeAfterLogin = () => {
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8 }}
-        className="absolute top-8 left-8 text-white font-bold text-4xl"
+        className="absolute top-0 left-8 text-white font-bold text-4xl"
       >
-        AgriGuard
+        
       </motion.div>
 
       {/* Newly Added Feature */}
@@ -45,7 +47,7 @@ const HomeAfterLogin = () => {
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.5 }}
-        className="absolute top-8 right-8 bg-yellow-400 text-black p-3 rounded-lg shadow-lg max-w-xs"
+        className="absolute top-16 right-8 bg-yellow-400 text-black p-3 rounded-lg shadow-lg max-w-xs"
       >
         <h3 className="text-sm font-bold mb-1 flex items-center">
           <FaBullhorn className="mr-2" /> New Feature

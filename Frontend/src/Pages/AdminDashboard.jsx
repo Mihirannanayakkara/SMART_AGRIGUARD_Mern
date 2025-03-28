@@ -24,6 +24,7 @@ const AdminDashboard = () => {
   const [showArticleManagement, setShowArticleManagement] = useState(false);
   const [userCount, setUserCount] = useState(0);
   const [articleCount, setArticleCount] = useState(0);
+  const [userRegistrationData, setUserRegistrationData] = useState({ labels: [], values: [] });
 
 
 
@@ -99,15 +100,31 @@ const AdminDashboard = () => {
   useEffect(() => {
     fetchUserCount();
     fetchArticleCount();
+    fetchUserRegistrationData();
   }, []);
 
-    
-  // Sample chart data
-  const chartData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-    values: [42, 58, 65, 89, 112, 256]
-  };
 
+  //fetch user registration data for chart
+  const fetchUserRegistrationData = async () => {
+    try {
+      const response = await axios.get('http://localhost:5557/api/users/registration-stats');
+      console.log('User registration data:', response.data);
+      
+      if (response.data && Array.isArray(response.data.labels) && Array.isArray(response.data.values)) {
+        setUserRegistrationData({
+          labels: response.data.labels,
+          values: response.data.values
+        });
+      } else {
+        console.error('Unexpected data structure:', response.data);
+        setUserRegistrationData({ labels: [], values: [] });
+      }
+    } catch (error) {
+      console.error('Error fetching user registration data:', error);
+      setUserRegistrationData({ labels: [], values: [] });
+    }
+  };
+  
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -183,7 +200,9 @@ const AdminDashboard = () => {
                 <h3 className="text-lg font-semibold text-gray-800">User Growth</h3>
                 <button className="text-sm text-green-600 hover:text-green-800">View All</button>
               </div>
-              <UserStatsChart data={chartData} />
+              <div className="bg-white p-6 rounded-xl shadow-lg" style={{ height: '500px' }}>
+               <UserStatsChart data={userRegistrationData} />
+              </div>
             </motion.div>
             
             <motion.div
