@@ -4,6 +4,7 @@ import { MdSearch } from 'react-icons/md';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Spinner from '../components/Spinner';
+import UserTopNavbar from '../components/UserTopNavbar';
 
 const BuyMaterial = () => {
   const [materials, setMaterials] = useState([]);
@@ -60,7 +61,8 @@ const BuyMaterial = () => {
     });
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="min-h-screen">
+      <UserTopNavbar/>
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-green-800 flex items-center">

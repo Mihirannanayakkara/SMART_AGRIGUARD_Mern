@@ -75,7 +75,41 @@ router.post("/login", async (req, res) => {
     console.error("Error in login:", error);
     res.status(500).json({ message: "Server error" });
   }
+});//user count
+router.get('/count', async (req, res) => {
+  try {
+    const count = await User.countDocuments();
+    res.json({ count });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching user count', error: error.message });
+  }
 });
+
+
+
+// User Registration Stats Route
+router.get('/registration-stats', async (req, res) => {
+  try {
+    const users = await User.find({}, 'createdAt');
+    const stats = {};
+
+    users.forEach(user => {
+      const date = user.createdAt.toISOString().split('T')[0]; // Get date in YYYY-MM-DD format
+      stats[date] = (stats[date] || 0) + 1;
+    });
+
+    const sortedDates = Object.keys(stats).sort();
+    const labels = sortedDates;
+    const values = sortedDates.map(date => stats[date]);
+
+    res.json({ labels, values });
+  } catch (error) {
+    console.error('Error fetching user registration stats:', error);
+    res.status(500).json({ message: 'Error fetching user registration stats' });
+  }
+});
+
+
 
 
 export default router;  

@@ -5,6 +5,9 @@ import { FaUsers, FaNewspaper, FaChartPie, FaEye, FaPlus, FaEdit } from 'react-i
 import AdminSidebar from '../components/AdminSidebar';
 import StatsCard from '../components/StatsCard';
 import UserStatsChart from '../components/UserStatsChart';
+import ArticleCreation from '../components/ArticleCreation';
+import ArticleManagement from '../components/ArticleManagement';
+import axios from 'axios';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -17,6 +20,13 @@ const AdminDashboard = () => {
   });
   const [loading, setLoading] = useState(true);
   const [recentActivities, setRecentActivities] = useState([]);
+  const [showArticleCreation, setShowArticleCreation] = useState(false);
+  const [showArticleManagement, setShowArticleManagement] = useState(false);
+  const [userCount, setUserCount] = useState(0);
+  const [articleCount, setArticleCount] = useState(0);
+  const [userRegistrationData, setUserRegistrationData] = useState({ labels: [], values: [] });
+
+
 
   useEffect(() => {
     console.log("Raw user data:", localStorage.getItem('user'));
@@ -30,6 +40,9 @@ const AdminDashboard = () => {
     }
      
     setUser(userData);
+
+
+    
     
     // Fetch dashboard stats from API
     const fetchStats = async () => {
@@ -37,7 +50,7 @@ const AdminDashboard = () => {
         // API call here
         // For now, we'll keep using the mock data
         setStats({
-          users: 256,
+          
           articles: 48,
           views: 12540,
           engagement: 67
@@ -61,13 +74,57 @@ const AdminDashboard = () => {
     
     fetchStats();
   }, [navigate]);
-    
-  // Sample chart data
-  const chartData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-    values: [42, 58, 65, 89, 112, 256]
+
+ 
+  //fetch user count
+    const fetchUserCount = async () => {
+      try {
+        const response = await axios.get('http://localhost:5557/api/users/count');
+        setUserCount(response.data.count);
+      } catch (error) {
+        console.error('Error fetching user count:', error);
+      }
+    };
+
+
+  //Fetch Article Count
+  const fetchArticleCount = async () => {
+    try {
+      const response = await axios.get('http://localhost:5557/api/articles/count');
+      setArticleCount(response.data.count);
+    } catch (error) {
+      console.error('Error fetching article count:', error);
+    }
   };
 
+  useEffect(() => {
+    fetchUserCount();
+    fetchArticleCount();
+    fetchUserRegistrationData();
+  }, []);
+
+
+  //fetch user registration data for chart
+  const fetchUserRegistrationData = async () => {
+    try {
+      const response = await axios.get('http://localhost:5557/api/users/registration-stats');
+      console.log('User registration data:', response.data);
+      
+      if (response.data && Array.isArray(response.data.labels) && Array.isArray(response.data.values)) {
+        setUserRegistrationData({
+          labels: response.data.labels,
+          values: response.data.values
+        });
+      } else {
+        console.error('Unexpected data structure:', response.data);
+        setUserRegistrationData({ labels: [], values: [] });
+      }
+    } catch (error) {
+      console.error('Error fetching user registration data:', error);
+      setUserRegistrationData({ labels: [], values: [] });
+    }
+  };
+  
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
@@ -99,20 +156,20 @@ const AdminDashboard = () => {
           
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <StatsCard 
-              title="Total Users" 
-              value={stats.users} 
-              icon={<FaUsers size={24} className="text-white" />} 
-              color="bg-green-600"
-              onClick={() => navigate('/admin/users')}
+          <StatsCard 
+            title="Total Users" 
+            value={userCount} 
+            icon={<FaUsers size={24} className="text-white" />} 
+            color="bg-green-600"
+             onClick={() => navigate('/admin/users')}
             />
             <StatsCard 
               title="Articles Published" 
-              value={stats.articles} 
+              value={articleCount} 
               icon={<FaNewspaper size={24} className="text-white" />} 
               color="bg-blue-600"
               onClick={() => navigate('/admin/articles')}
-            />
+/>
             <StatsCard 
               title="Total Views" 
               value={stats.views.toLocaleString()} 
@@ -128,6 +185,8 @@ const AdminDashboard = () => {
               onClick={() => navigate('/admin/analytics')}
             />
           </div>
+
+          
           
           {/* Charts and Additional Content */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
@@ -141,7 +200,9 @@ const AdminDashboard = () => {
                 <h3 className="text-lg font-semibold text-gray-800">User Growth</h3>
                 <button className="text-sm text-green-600 hover:text-green-800">View All</button>
               </div>
-              <UserStatsChart data={chartData} />
+              <div className="bg-white p-6 rounded-xl shadow-lg" style={{ height: '500px' }}>
+               <UserStatsChart data={userRegistrationData} />
+              </div>
             </motion.div>
             
             <motion.div
@@ -177,14 +238,13 @@ const AdminDashboard = () => {
             </motion.div>
           </div>
           
-          {/* Quick Actions Section */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
               className="bg-white p-6 rounded-xl shadow-lg"
-              onClick={() => navigate('/admin/articles/create')}
+              onClick={() => setShowArticleCreation(true)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -204,7 +264,7 @@ const AdminDashboard = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.5 }}
               className="bg-white p-6 rounded-xl shadow-lg"
-              onClick={() => navigate('/admin/articles')}
+              onClick={() => setShowArticleManagement(true)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -221,11 +281,23 @@ const AdminDashboard = () => {
           </div>
         </div>
         
+        
         {/* Footer */}
         <footer className="p-6 text-center text-gray-500 text-sm">
           <p>© 2023 AgriGuard Admin Dashboard. All rights reserved.</p>
         </footer>
       </div>
+         {/* Article Creation Modal */}
+      <ArticleCreation
+        isOpen={showArticleCreation}
+        onClose={() => setShowArticleCreation(false)}
+      />
+
+      {/* Article Management Modal */}
+      <ArticleManagement
+        isOpen={showArticleManagement}
+        onClose={() => setShowArticleManagement(false)}
+      />
     </div>
   );
 };
