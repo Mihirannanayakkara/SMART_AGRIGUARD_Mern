@@ -9,6 +9,8 @@ import AiRecomendationForm from './Pages/AiRecomendationForm';
 import UpdateSubmittedForm from "./Pages/UpdateSubmittedForm";
 import DeleteSubmittedForm from "./Pages/DeleteSubmittedForm";
 import MyInquiries from './Pages/MyInquiries';
+import Dashboard from "./components/Dashboard";
+import ManagerResponses from "./Pages/ManagerResponses";
 
 
 
@@ -49,12 +51,15 @@ const App = () => {
         <Route path="/admin/settings" element={<AdminDashboard />} />
 
         {/* Inquiry Form & AI Recommendation Routes */}
-        <Route path="/createinquiry" element={<CreateForm />} />
-        <Route path="/updateinquiry/:id" element={<UpdateSubmittedForm />} />
-        <Route path="/deleteinquiry/:id" element={<DeleteSubmittedForm />} />
-        <Route path="/aitreatment" element={<AiRecomendationForm />} />
-        <Route path="/myinquiries" element={<MyInquiries />} />
-        <Route path="/userprofile" element={<UserProfile />} />
+        <Route path="/dashboard" element={<Dashboard />}>
+        <Route path="createinquiry" element={<CreateForm />} />
+        <Route path="updateinquiry/:id" element={<UpdateSubmittedForm />} />
+        <Route path="deleteinquiry/:id" element={<DeleteSubmittedForm />} />
+        <Route path="aitreatment" element={<AiRecomendationForm />} />
+        <Route path="myinquiries" element={<MyInquiries />} />
+        <Route path="userprofile" element={<UserProfile />} />
+        <Route path="managerresponses" element={<ManagerResponses />} />
+        </Route>
           
         <Route path="/my-inquiriez" element={<MyInquiriez />} />
         <Route path="/manager-dashboard" element={<ManagerDashboard />} />
