@@ -8,6 +8,9 @@ import userRoutes from "./Routes/userRoutes.js";
 import testRoute from "./Routes/testRoute.js";  
 import materialRoute from './routes/materialRoute.js'; 
 import articleRoutes from './Routes/articleRoutes.js';
+import alertRoutes from "./Routes/alertRoutes.js";
+import ManagerRoutes from "./Routes/ManagerRoutes.js";
+
 
 
 const app = express();
@@ -39,6 +42,9 @@ app.use("/farmer", FarmerFormRoute);
 app.use("/ai", AiTreatmentRoute);
 app.use("/api/articles", articleRoutes);
 app.use("/api/users", userRoutes);
+
+app.use('/manager', ManagerRoutes);
+app.use('/alerts', alertRoutes);
 
 
 mongoose

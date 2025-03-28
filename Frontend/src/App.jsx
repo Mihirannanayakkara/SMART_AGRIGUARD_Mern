@@ -1,6 +1,8 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { SnackbarProvider } from "notistack";
+import PrivateRoute from "./components/PrivateRoute";
+
 
 import CreateForm from "./Pages/CreateForm";
 import UserProfile from "./Pages/UserProfile";
@@ -30,6 +32,8 @@ import BuyMaterial from "./Pages/BuyMaterial";
 
 import MyInquiriez from "./Pages/MyInquiriez";
 import ManagerDashboard from "./Pages/ManagerDashboard";
+import ManagerAlertForm from "./Pages/ManagerAlertForm";
+import UpdateAlerts from "./Pages/UpdateAlerts";
 
 const App = () => {
   return (
@@ -65,6 +69,13 @@ const App = () => {
 
           <Route path="/my-inquiriez" element={<MyInquiriez />} />
           <Route path="/manager-dashboard" element={<ManagerDashboard />} />
+          <Route path="/alert" element={<ManagerAlertForm />} />
+          <Route path="/manager/alerts/manage" element={
+            <PrivateRoute allowedRoles={["manager"]}>
+            <UpdateAlerts />
+            </PrivateRoute>
+            }/>
+
 
           <Route path="/materials" element={<HomeMaterial />} />
           <Route path="/materials/create" element={<CreateMaterial />} />

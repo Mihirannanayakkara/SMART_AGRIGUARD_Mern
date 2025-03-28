@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import BubbleMap from "../components/BubbleMap";
 import ReportsTab from "../components/ReportsTab";
-import ReportsPage from "../components/ReportsPage";
+import LogingNavBar from '../components/MNavigationBar ';
+
 import {
   FaBars,
   FaTimes,
@@ -11,6 +12,8 @@ import {
   FaClipboardList,
   FaBug,
   FaTrash,
+  FaEye,
+  FaEdit,
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 
@@ -29,6 +32,7 @@ const ManagerDashboard = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchDate, setSearchDate] = useState("");
+  const [isViewMode, setIsViewMode] = useState(false);
 
   const userData = JSON.parse(localStorage.getItem("user"));
   const token = userData?.token;
@@ -53,9 +57,11 @@ const ManagerDashboard = () => {
 
   const updateStatus = async (id, status) => {
     try {
-      await axios.put(`http://localhost:5557/manager/form/${id}/status`, { status }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.put(
+        `http://localhost:5557/manager/form/${id}/status`,
+        { status },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       fetchForms();
     } catch (error) {
       console.error("Error updating status:", error);
@@ -65,9 +71,11 @@ const ManagerDashboard = () => {
   const submitReply = async (id) => {
     if (!reply.trim()) return;
     try {
-      await axios.post(`http://localhost:5557/manager/form/${id}/reply`, { reply }, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.post(
+        `http://localhost:5557/manager/form/${id}/reply`,
+        { reply },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
       setReply("");
       setSelectedForm(null);
       fetchForms();
@@ -94,7 +102,10 @@ const ManagerDashboard = () => {
   ];
 
   return (
+    <>
+    <LogingNavBar />
     <div className="flex h-screen bg-gray-100">
+      
       {/* Sidebar */}
       <motion.div
         className="h-screen bg-white shadow-xl relative"
@@ -156,12 +167,12 @@ const ManagerDashboard = () => {
 
       {/* Main Panel */}
       <div className="flex-1 overflow-y-auto p-6">
-        <h1 className="text-3xl font-bold text-green-700 mb-6">Manager Panel</h1>
+      
 
         {activeTab === "all-inquiries" && (
           <>
             {/* Filters */}
-            <div className="bg-white border border-gray-200 p-6 rounded-xl shadow-md flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div className="bg-white border border-green-300 p-6 rounded-xl shadow-lg flex flex-wrap items-center justify-between gap-4 mb-6">
               <div className="w-full sm:w-auto">
                 <label className="block text-sm mb-1">Filter by Status</label>
                 <select
@@ -225,82 +236,128 @@ const ManagerDashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {forms.map((form) => (
-                      <tr key={form._id} className="border-b hover:bg-gray-50">
-                        <td className="p-4">{form.fullname}</td>
-                        <td className="p-4">{form.plantName}</td>
-                        <td className="p-4">{form.diseaseName}</td>
-                        <td className="p-4">{form.issueDescription}</td>
-                        <td className="p-4">{form.reply || "No reply yet"}</td>
-                        <td className="p-4">
-                          {form.reply && (
-                            <button
-                              onClick={() => deleteReply(form._id)}
-                              className="bg-red-100 hover:bg-red-200 text-red-500 p-2 rounded-full"
-                              title="Delete Reply"
-                            >
-                              <FaTrash size={18} />
-                            </button>
-                          )}
-                        </td>
-                        <td className="p-4">
-                          <select
-                            value={form.status}
-                            onChange={(e) => updateStatus(form._id, e.target.value)}
-                            className={`
-                              px-3 py-2 rounded-lg shadow focus:outline-none transition duration-300
-                              ${
-                                form.status === "Resolved"
-                                  ? "bg-green-200 text-green-800 hover:bg-green-300"
-                                  : form.status === "In Progress"
-                                  ? "bg-yellow-200 text-yellow-800 hover:bg-yellow-300"
-                                  : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-                              }
-                            `}
-                          >
-                            <option value="Pending">Pending</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Resolved">Resolved</option>
-                          </select>
-                        </td>
-                        <td className="p-4">
-                          <button
-                            onClick={() => setSelectedForm(form)}
-                            className="px-4 py-2 bg-blue-100 text-blue-700 font-medium rounded-lg hover:bg-blue-200 transition"
-                          >
-                            Reply
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
+  {forms.map((form) => (
+    <tr key={form._id} className="border-b hover:bg-gray-50">
+      <td className="p-4">{form.fullname}</td>
+      <td className="p-4">{form.plantName}</td>
+      <td className="p-4">{form.diseaseName}</td>
+      <td className="p-4">
+        {form.issueDescription.length > 10
+          ? `${form.issueDescription.slice(0, 10)}...`
+          : form.issueDescription}
+      </td>
+      <td className="p-4">
+        {form.reply
+          ? form.reply.length > 10
+            ? `${form.reply.slice(0, 10)}...`
+            : form.reply
+          : "No reply yet"}
+      </td>
+      <td className="p-4 flex gap-2">
+        {form.reply && (
+          <>
+            <button
+              onClick={() => {
+                setIsViewMode(true);
+                setReply(form.reply);
+                setSelectedForm(form);
+              }}
+              className="bg-blue-100 hover:bg-blue-200 text-blue-500 p-2 rounded-full"
+              title="View Reply"
+            >
+              <FaEye size={18} />
+            </button>
+            <button
+              onClick={() => {
+                setIsViewMode(false);
+                setReply(form.reply);
+                setSelectedForm(form);
+              }}
+              className="bg-green-100 hover:bg-green-200 text-green-500 p-2 rounded-full"
+              title="Edit Reply"
+            >
+              <FaEdit size={18} />
+            </button>
+            <button
+              onClick={() => deleteReply(form._id)}
+              className="bg-red-100 hover:bg-red-200 text-red-500 p-2 rounded-full"
+              title="Delete Reply"
+            >
+              <FaTrash size={18} />
+            </button>
+          </>
+        )}
+      </td>
+      <td className="p-4">
+        <select
+          value={form.status}
+          onChange={(e) => updateStatus(form._id, e.target.value)}
+          className={`px-3 py-2 rounded-lg shadow focus:outline-none transition duration-300 ${
+            form.status === "Resolved"
+              ? "bg-green-200 text-green-800 hover:bg-green-300"
+              : form.status === "In Progress"
+              ? "bg-yellow-200 text-yellow-800 hover:bg-yellow-300"
+              : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+          }`}
+        >
+          <option value="Pending">Pending</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Resolved">Resolved</option>
+        </select>
+      </td>
+      <td className="p-4">
+        <button
+          onClick={() => {
+            setIsViewMode(false);
+            setReply("");
+            setSelectedForm(form);
+          }}
+          className="px-4 py-2 bg-blue-100 text-blue-700 font-medium rounded-lg hover:bg-blue-200 transition"
+        >
+          Reply
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
                 </table>
               </div>
             )}
 
-            {/* Modal */}
+            {/* Reply Modal */}
             {selectedForm && (
-              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
                   <h2 className="text-lg font-bold mb-4">Reply to {selectedForm.fullname}</h2>
+                  <div className="mb-4 p-3 bg-gray-100 rounded border border-gray-300 text-sm text-gray-700">
+                    <strong>Issue Description:</strong>
+                    <p className="mt-1">{selectedForm.issueDescription}</p>
+                  </div>
                   <textarea
                     className="w-full p-2 border rounded"
                     placeholder="Type your reply..."
                     value={reply}
                     onChange={(e) => setReply(e.target.value)}
+                    readOnly={isViewMode}
                   ></textarea>
                   <div className="flex justify-end mt-4">
+                    {!isViewMode && (
+                      <button
+                        onClick={() => submitReply(selectedForm._id)}
+                        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                      >
+                        Submit Reply
+                      </button>
+                    )}
                     <button
-                      onClick={() => submitReply(selectedForm._id)}
-                      className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                    >
-                      Submit Reply
-                    </button>
-                    <button
-                      onClick={() => setSelectedForm(null)}
+                      onClick={() => {
+                        setSelectedForm(null);
+                        setIsViewMode(false);
+                      }}
                       className="ml-2 px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
                     >
-                      Cancel
+                      Close
                     </button>
                   </div>
                 </div>
@@ -310,14 +367,10 @@ const ManagerDashboard = () => {
         )}
 
         {activeTab === "analytics" && <BubbleMap />}
-        {activeTab === "reports" && (
-          <>
-            <ReportsTab />
-            <ReportsPage />
-          </>
-        )}
+        {activeTab === "reports" && <ReportsTab />}
       </div>
     </div>
+    </>
   );
 };
 
