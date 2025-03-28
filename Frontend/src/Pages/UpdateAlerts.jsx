@@ -101,7 +101,7 @@ const UpdateAlerts = () => {
     <>
     <LogingNavBar />
     <div className="p-6 min-h-screen bg-gray-100">
-      <h1 className="text-4xl text-center font-bold text-gray-800 ml-7 mb-9 mt-5">All Aerts</h1>
+      <h1 className="text-4xl text-center font-bold text-gray-800 ml-7 mb-9 mt-5">All Alerts</h1>
 
       {loading ? (
         <p className="text-gray-500 text-center">Loading alerts...</p>
@@ -109,7 +109,7 @@ const UpdateAlerts = () => {
         <p className="text-gray-600 text-center">No alerts found.</p>
       ) : (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 justify-items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center">
             {currentAlerts.map((alert) => {
               const isEditing = editingId === alert._id;
               const data = isEditing ? editedAlert : alert;

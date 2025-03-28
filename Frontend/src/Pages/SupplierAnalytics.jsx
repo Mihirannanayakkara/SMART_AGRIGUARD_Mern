@@ -4,6 +4,7 @@ import SupplierSidebar from "../components/SupplierSidebar";
 import { FaBoxes, FaUsers, FaChartLine, FaDownload } from "react-icons/fa";
 import { Page, Text, View, Document, StyleSheet, PDFDownloadLink, Image } from "@react-pdf/renderer";
 import { Chart as ChartJS } from "chart.js/auto";
+import ManagerNavBar from "../components/ManagerNavBar";
 
 
 // PDF styles

@@ -29,6 +29,7 @@ import ShowMaterial from "./Pages/ShowMaterial";
 import EditMaterial from "./Pages/EditMaterial";
 // import DeleteMaterial from './pages/DeleteMaterial';
 import BuyMaterial from "./Pages/BuyMaterial";
+import SupplierAnalytics from "./Pages/SupplierAnalytics";
 
 import MyInquiriez from "./Pages/MyInquiriez";
 import ManagerDashboard from "./Pages/ManagerDashboard";
@@ -47,7 +48,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/loghome" element={<HomeAfterLogin />} />
           <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/users" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<UserManagement />} />
           <Route path="/admin/articles" element={<AdminDashboard />} />
           <Route path="/admin/articles/create" element={<AdminDashboard />} />
           <Route path="/admin/analytics" element={<AdminDashboard />} />
@@ -83,6 +84,7 @@ const App = () => {
           <Route path="/materials/edit/:id" element={<EditMaterial />} />
           {/* <Route path='/materials/delete/:id' element={<DeleteMaterial />} /> */}
           <Route path="/materials/buy" element={<BuyMaterial />} />
+          <Route path="/materials/analytics" element={<SupplierAnalytics />} />
         </Routes>
       </SnackbarProvider>
     </>

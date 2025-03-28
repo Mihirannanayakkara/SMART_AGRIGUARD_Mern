@@ -38,9 +38,9 @@ const NavigationBar = () => {
     };
 
     return (
-        <header className="header top-0 h-20 sticky backdrop-filter backdrop-blur-lg bg-green-900 flex items-center justify-between mx-auto px-16 left-0 w-full z-10">
+        <header className="header top-0 h-12 sticky backdrop-filter backdrop-blur-lg bg-green-900 flex items-center justify-between mx-auto px-16 left-0 w-full z-10">
             <div className="w-3/12">
-                <h1 className="text-3xl font-bold">
+                <h1 className="text-2xl font-bold">
                     <Link to="/loghome" className="text-white hover:text-green-500">AgriGuard</Link>
                 </h1>
             </div>

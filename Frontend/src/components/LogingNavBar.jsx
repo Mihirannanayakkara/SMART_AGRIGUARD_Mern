@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../../src/index.css";
-import { FaUser } from "react-icons/fa";
+import { FaUser , FaSignOutAlt } from "react-icons/fa";
 
 const NavigationBar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -69,6 +69,14 @@ const NavigationBar = () => {
                 <div className="relative group">
                     <button className="flex items-center justify-center w-10 h-10 rounded-full  text-white transition duration-300">
                         <FaUser size={20} />
+                    </button>
+                </div>
+                <div className="relative group ml-14">
+                    <button 
+                        onClick={handleSignOut}
+                        className="flex items-center justify-center w-10 h-10 rounded-full text-white transition duration-300 hover:text-green-500"
+                    >
+                        <FaSignOutAlt size={20} />
                     </button>
                 </div>
             </div>
