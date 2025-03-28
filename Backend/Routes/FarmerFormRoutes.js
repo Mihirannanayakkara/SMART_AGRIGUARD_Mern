@@ -30,8 +30,9 @@ router.post('/', authenticateToken, async (request,response)=>{
             contactNumber: request.body.contactNumber,
             plantName: request.body.plantName,
             diseaseName: request.body.diseaseName,
-            issueDescription: request.body.issueDescription
-  
+            issueDescription: request.body.issueDescription,
+            latitude: request.body.latitude,
+            longitude: request.body.longitude
         };
   
         const farmer = await Farmer.create(newFarmerForm);
