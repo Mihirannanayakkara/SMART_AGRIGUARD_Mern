@@ -4,6 +4,7 @@ import SupplierSidebar from "../components/SupplierSidebar";
 import { FaBoxes, FaUsers, FaChartLine, FaDownload } from "react-icons/fa";
 import { Page, Text, View, Document, StyleSheet, PDFDownloadLink, Image } from "@react-pdf/renderer";
 import { Chart as ChartJS } from "chart.js/auto";
+import ManagerNavBar from "../components/ManagerNavBar";
 
 // PDF styles
 const styles = StyleSheet.create({
@@ -155,10 +156,20 @@ const SupplierAnalytics = () => {
   }, [barChartImage, lineChartImage]);
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div
+    className="min-h-screen bg-cover bg-center bg-fixed"
+    style={{
+      backgroundImage:
+        "url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')",
+      backgroundColor: "rgba(243, 244, 246, 1.2)",
+      backgroundBlendMode: "overlay",
+    }}
+  >
+    <ManagerNavBar />
+    <div className="flex h-screen">
       <SupplierSidebar />
       <div className="flex-1 overflow-auto">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-28">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-3xl font-bold text-green-800">
               Supplier Analytics
@@ -293,6 +304,7 @@ const SupplierAnalytics = () => {
 </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };

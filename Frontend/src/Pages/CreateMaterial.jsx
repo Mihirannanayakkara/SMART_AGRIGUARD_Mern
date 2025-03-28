@@ -7,6 +7,7 @@ import { useDropzone } from "react-dropzone";
 import { FaSave, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import ProgressBar from "../components/ProgressBar";
 import SupplierSidebar from "../components/SupplierSidebar";
+import ManagerNavBar from "../components/ManagerNavBar";
 
 const CreateMaterial = () => {
   const [materialName, setMaterialName] = useState("");
@@ -425,17 +426,19 @@ const CreateMaterial = () => {
   };
 
   return (
+    
     <div className="flex h-screen bg-gray-100">
     <SupplierSidebar />
     <div className="flex-1 overflow-auto">
-    <div className="min-h-screen relative bg-gray-100 py-28">
+      <ManagerNavBar />
+      <div className="min-h-screen relative bg-gray-100 py-28">
       <div
         className="absolute inset-0 bg-cover bg-center bg-fixed"
         style={{
           backgroundImage:
             "url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')",
-          filter: "blur(1px)",
-          WebkitFilter: "blur(9px)",
+            backgroundColor: "rgba(243, 244, 246, 0.8)",
+            backgroundBlendMode: "overlay",
         }}
       ></div>
 

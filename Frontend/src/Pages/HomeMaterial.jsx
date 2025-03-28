@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Spinner from "../components/Spinner";
-import { Link } from "react-router-dom";
 import { MdSearch } from "react-icons/md";
-import { FaSort, FaEye, FaShoppingBag, FaShoppingCart } from "react-icons/fa";
+import { FaSort, FaEye, FaTrash } from "react-icons/fa";
 import SupplierSidebar from "../components/SupplierSidebar";
+import ManagerNavBar from "../components/ManagerNavBar";
+import { motion, AnimatePresence } from "framer-motion";
+import ShowMaterial from "./ShowMaterial";
+import { Link } from "react-router-dom";
+import { FaEdit } from "react-icons/fa";
+import EditMaterial from './EditMaterial';
 
 const HomeMaterial = () => {
   const [materials, setMaterials] = useState([]);
@@ -13,6 +18,10 @@ const HomeMaterial = () => {
   const [sortField, setSortField] = useState("materialName");
   const [sortOrder, setSortOrder] = useState("asc");
   const [filterCategory, setFilterCategory] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [materialToDelete, setMaterialToDelete] = useState(null);
+  const [selectedMaterial, setSelectedMaterial] = useState(null);
+  const [editingMaterial, setEditingMaterial] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -28,6 +37,37 @@ const HomeMaterial = () => {
       });
   }, []);
 
+  const openEditModal = (materialId) => {
+    setEditingMaterial(materialId);
+  };
+
+  const openDeleteModal = (materialId) => {
+    setMaterialToDelete(materialId);
+    setShowDeleteModal(true);
+  };
+
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false);
+    setMaterialToDelete(null);
+  };
+
+  const handleDelete = async () => {
+    if (materialToDelete) {
+      try {
+        await axios.delete(
+          `http://localhost:5557/materials/${materialToDelete}`
+        );
+        setMaterials(
+          materials.filter((material) => material._id !== materialToDelete)
+        );
+        closeDeleteModal();
+      } catch (error) {
+        console.error("Error deleting material:", error);
+        // Handle error (e.g., show error message to user)
+      }
+    }
+  };
+
   const handleSort = (field) => {
     if (field === sortField) {
       setSortOrder(sortOrder === "asc" ? "desc" : "asc");
@@ -35,6 +75,28 @@ const HomeMaterial = () => {
       setSortField(field);
       setSortOrder("asc");
     }
+  };
+
+  // Add this function before the HomeMaterial component
+  const getCategoryColor = (category) => {
+    switch (category.toLowerCase()) {
+      case "fertilizer":
+        return "bg-blue-300 text-white";
+      case "pesticide":
+        return "bg-red-300 text-white";
+      case "herbicide":
+        return "bg-green-300 text-white";
+      default:
+        return "bg-gray-300 text-white";
+    }
+  };
+
+  const openMaterialDetails = (materialId) => {
+    setSelectedMaterial(materialId);
+  };
+
+  const closeMaterialDetails = () => {
+    setSelectedMaterial(null);
   };
 
   const filteredAndSortedMaterials = materials
@@ -52,90 +114,212 @@ const HomeMaterial = () => {
     });
 
   return (
-    <div className="flex h-screen">
-      <SupplierSidebar />
-      <div className="flex-1 overflow-auto bg-gray-100">
-        <div className="p-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
-            <div className="w-full md:w-1/3 relative">
-              <input
-                type="text"
-                placeholder="Search materials..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full p-2 pl-8 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 text-sm"
-              />
-              <MdSearch className="absolute left-2 top-1/2 transform -translate-y-1/2 text-green-400" />
-            </div>
-            <div className="flex flex-wrap justify-center md:justify-end gap-2">
-              <select
-                value={filterCategory}
-                onChange={(e) => setFilterCategory(e.target.value)}
-                className="p-2 border border-gray-300 rounded"
-              >
-                <option value="">All Categories</option>
-                <option value="Fertilizer">Fertilizer</option>
-                <option value="Pesticide">Pesticide</option>
-                <option value="Herbicide">Herbicide</option>
-              </select>
-              <button
-                onClick={() => handleSort("materialName")}
-                className="p-2 bg-gray-100 text-gray-700 rounded hover:bg-green-400 transition-colors flex items-center"
-              >
-                <FaSort className="mr-2" />
-                Sort by Name
-              </button>
-              <button
-                onClick={() => handleSort("pricePerUnit")}
-                className="p-2 bg-gray-100 text-gray-700 rounded hover:bg-green-400 transition-colors flex items-center"
-              >
-                <FaSort className="mr-2" />
-                Sort by Price
-              </button>
+    <div className="flex h-screen bg-gray-100">
+      <ManagerNavBar />
+      <div className="flex flex-1 overflow-hidden">
+        <SupplierSidebar />
+        <div className="flex-1 overflow-auto p-8">
+          <div className="max-w-7xl mx-auto">
+            <h1 className="text-3xl font-bold text-gray-800 mb-8">Materials</h1>
+            <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+              <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div className="flex-1 min-w-[200px] relative">
+                  <input
+                    type="text"
+                    placeholder="Search materials..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full p-3 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+                  />
+                  <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl" />
+                </div>
+                <select
+                  value={filterCategory}
+                  onChange={(e) => setFilterCategory(e.target.value)}
+                  className="p-3 border border-gray-300 rounded-md text-sm"
+                >
+                  <option value="">All Categories</option>
+                  <option value="Fertilizer">Fertilizer</option>
+                  <option value="Pesticide">Pesticide</option>
+                  <option value="Herbicide">Herbicide</option>
+                </select>
+                <button
+                  onClick={() => handleSort("materialName")}
+                  className="p-3 bg-gray-100 text-gray-700 rounded-md hover:bg-green-500 hover:text-white transition-colors flex items-center text-sm"
+                >
+                  <FaSort className="mr-2" />
+                  Sort by Name
+                </button>
+                <button
+                  onClick={() => handleSort("pricePerUnit")}
+                  className="p-3 bg-gray-100 text-gray-700 rounded-md hover:bg-green-500 hover:text-white transition-colors flex items-center text-sm"
+                >
+                  <FaSort className="mr-2" />
+                  Sort by Price
+                </button>
+              </div>
+
+              {loading ? (
+                <Spinner />
+              ) : (
+                <section className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5">
+                  {filteredAndSortedMaterials.map((material) => (
+                    <div
+                      key={material._id}
+                      className="w-72 bg-white bg-opacity-80 backdrop-filter backdrop-blur-sm shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl transition-all relative"
+                    >
+                      <img
+                        src={
+                          material.image ||
+                          "https://via.placeholder.com/300x200?text=No+Image"
+                        }
+                        alt={material.materialName}
+                        className="h-80 w-72 object-cover rounded-t-xl"
+                      />
+                      <div className="px-4 py-3 w-72">
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(
+                            material.category
+                          )}`}
+                        >
+                          {material.category}
+                        </span>
+                        <h3 className="text-base font-semibold text-gray-800 truncate block capitalize mt-2">
+                          {material.materialName}
+                        </h3>
+                        <p className="text-lg font-bold text-gray-800 mt-3 mb-10">
+                          Rs.{material.pricePerUnit.toFixed(2)} /{" "}
+                          <span className="text-sm font-normal text-gray-600">
+                            {material.unitType}
+                          </span>
+                        </p>
+                      </div>
+                      <div className="absolute bottom-3 left-3 flex items-center space-x-2">
+                        <button
+                          onClick={() => openMaterialDetails(material._id)}
+                          className="flex items-center text-green-600 px-3 rounded-full transition-colors text-sm hover:text-green-700"
+                        >
+                          <FaEye className="mr-1.5" />
+                          <span>View Details</span>
+                        </button>
+                        <button
+                          onClick={() => openEditModal(material._id)}
+                          className="flex items-center text-blue-600 px-3 rounded-full transition-colors text-sm hover:text-blue-700"
+                        >
+                          <FaEdit className="mr-1.5" />
+                          <span>Edit</span>
+                        </button>
+                        <button
+                          onClick={() => openDeleteModal(material._id)}
+                          className="flex items-center text-red-600 px-3 rounded-full transition-colors text-sm hover:text-red-700"
+                        >
+                          <FaTrash className="mr-1.5" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </section>
+              )}
+
+              {!loading && filteredAndSortedMaterials.length === 0 && (
+                <div className="text-center py-8">
+                  <p className="text-xl text-gray-600">
+                    No materials found. Start by adding a new material.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
-
-          {loading ? (
-            <Spinner />
-          ) : (
-            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredAndSortedMaterials.map((material) => (
-  <div
-    key={material._id}
-    className="bg-white shadow-md rounded-xl overflow-hidden"
-  >
-    <Link to={`/materials/details/${material._id}`} className="flex h-full">
-      <div className="p-4 flex flex-col flex-grow">
-        <span className="text-gray-600 text-xs uppercase">{material.category}</span>
-        <h2 className="text-lg font-bold text-gray-800 capitalize mb-2 truncate">{material.materialName}</h2>
-        <p className="text-gray-600 mb-4">Price: Rs.{material.pricePerUnit}/{material.unitType}</p>
-        <div className="mt-auto flex items-center justify-between">
-        <FaEye className="text-green-600" size={16} />
-          
         </div>
       </div>
-      <div className="w-1/3 overflow-hidden">
-        <img
-          src={material.image || "https://via.placeholder.com/300x200?text=No+Image"}
-          alt={material.materialName}
-          className="w-full h-full object-cover"
+
+      <AnimatePresence>
+  {editingMaterial && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        transition={{ duration: 0.3 }}
+        className="bg-white rounded-lg p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+      >
+        <EditMaterial
+          id={editingMaterial}
+          onClose={() => setEditingMaterial(null)}
+          onUpdate={(updatedMaterial) => {
+            // Update the material in the list
+            setMaterials(materials.map(m => m._id === updatedMaterial._id ? updatedMaterial : m));
+            setEditingMaterial(null);
+          }}
         />
-      </div>
-    </Link>
-  </div>
-))}
-            </section>
-          )}
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
 
-          {!loading && filteredAndSortedMaterials.length === 0 && (
-            <div className="text-center py-8 bg-white rounded-lg shadow-md">
-              <p className="text-xl text-gray-600">
-                No materials found. Start by adding a new material.
-              </p>
+      {/* Material Details Popup */}
+      <AnimatePresence>
+        {selectedMaterial && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="bg-white rounded-lg p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+            >
+              <ShowMaterial
+                id={selectedMaterial}
+                onClose={closeMaterialDetails}
+              />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white rounded-lg p-8 max-w-md w-full mx-4"
+          >
+            <h3 className="text-2xl font-bold text-gray-900 mb-4">
+              Delete Confirmation
+            </h3>
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to delete this material? This action cannot
+              be undone.
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={closeDeleteModal}
+                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-6 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+              >
+                Delete
+              </button>
             </div>
-          )}
+          </motion.div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

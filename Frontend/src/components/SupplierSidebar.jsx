@@ -29,7 +29,7 @@ const SupplierSidebar = ({ user }) => {
 
   const sidebarVariants = {
     expanded: { width: '250px', transition: { type: 'spring', stiffness: 100, damping: 20 } },
-    collapsed: { width: '80px', transition: { type: 'spring', stiffness: 100, damping: 20 } },
+    collapsed: { width: '65px', transition: { type: 'spring', stiffness: 100, damping: 20 } },
   };
 
   const menuItems = [
@@ -48,7 +48,7 @@ const SupplierSidebar = ({ user }) => {
       initial="expanded"
       animate={isCollapsed ? 'collapsed' : 'expanded'}
     >
-      <div className="flex justify-end p-4">
+      <div className="flex justify-center p-4 mt-16">
         <button onClick={toggleSidebar} className="text-green-600 hover:text-green-800">
           {isCollapsed ? <FaBars size={20} /> : <FaTimes size={20} />}
         </button>
@@ -58,8 +58,8 @@ const SupplierSidebar = ({ user }) => {
         <motion.div 
           className="rounded-full bg-green-100 overflow-hidden mb-3"
           animate={{ 
-            width: isCollapsed ? '48px' : '80px', 
-            height: isCollapsed ? '48px' : '80px' 
+            width: isCollapsed ? '0px' : '80px', 
+            height: isCollapsed ? '0px' : '80px' 
           }}
           transition={{ duration: 0.3 }}
         >
