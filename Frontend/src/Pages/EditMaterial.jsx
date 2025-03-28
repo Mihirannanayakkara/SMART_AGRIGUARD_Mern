@@ -244,10 +244,10 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
           </div>
     
           <div className="mt-4 max-h-[70vh] overflow-y-auto">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6 ">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="md:col-span-1">
-                  <div className="bg-gray-100 p-4 rounded-lg shadow">
+                  <div className="bg-green-50 p-4 rounded-lg shadow-lg">
                     <img
                       src={formData.image}
                       alt={formData.materialName}
@@ -261,6 +261,7 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                         value={formData.materialName}
                         onChange={handleInputChange}
                         error={errors.materialName}
+                        className="border-2 border-green-500"
                       />
                       <SelectField
                         label="Category"
@@ -270,6 +271,7 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                         onChange={handleInputChange}
                         options={categoryOptions}
                         error={errors.category}
+                        className="border-2 border-green-500"
                       />
                       <PriceField
                         label="Price per Unit"
@@ -278,6 +280,7 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                         value={formData.pricePerUnit}
                         onChange={handlePriceChange}
                         error={errors.pricePerUnit}
+                        className="border-2 border-green-500"
                       />
                       <SelectField
                         label="Unit Type"
@@ -287,6 +290,7 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                         onChange={handleInputChange}
                         options={unitTypeOptions}
                         error={errors.unitType}
+                        className="border-2 border-green-500"
                       />
                     </div>
                   </div>
@@ -306,7 +310,7 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                       rows="4"
                       className={`mt-1 block w-full border ${
                         errors.usageInstructions ? "border-red-500" : "border-gray-300"
-                      } rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
+                      } rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-green-500 focus:border-green-500`}
                     ></textarea>
                     {errors.usageInstructions && (
                       <p className="mt-1 text-sm text-red-500">{errors.usageInstructions}</p>
@@ -326,6 +330,7 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                         value={formData.supplierName}
                         onChange={handleInputChange}
                         error={errors.supplierName}
+                        className="border-2 border-green-500"
                       />
                       <InputField
                         label="Contact Information"
@@ -334,13 +339,14 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                         value={formData.supplierContact}
                         onChange={handleSupplierContactChange}
                         error={errors.supplierContact}
+                        className="border-2 border-green-500"
                       />
                     </div>
                   </div>
     
                   <div className="bg-white shadow rounded-lg p-6">
                     <h3 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
-                      <FaTint className="mr-2 text-blue-500" />
+                      <FaTint className="mr-2 text-green-500" />
                       Disease Usage
                     </h3>
                     <div className="grid grid-cols-2 gap-2">
@@ -352,7 +358,7 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                             value={option}
                             checked={formData.diseaseUsage.includes(option)}
                             onChange={handleDiseaseChange}
-                            className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                            className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                           />
                           <label htmlFor={option} className="ml-2 block text-sm text-gray-900">
                             {option}

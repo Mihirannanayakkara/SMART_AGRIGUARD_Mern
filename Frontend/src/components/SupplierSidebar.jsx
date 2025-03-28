@@ -58,8 +58,8 @@ const SupplierSidebar = ({ user }) => {
         <motion.div 
           className="rounded-full bg-green-100 overflow-hidden mb-3"
           animate={{ 
-            width: isCollapsed ? '0px' : '80px', 
-            height: isCollapsed ? '0px' : '80px' 
+            width: isCollapsed ? '40px' : '80px', 
+            height: isCollapsed ? '40px' : '80px' 
           }}
           transition={{ duration: 0.3 }}
         >

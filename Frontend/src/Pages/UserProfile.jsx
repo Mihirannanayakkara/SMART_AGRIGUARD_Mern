@@ -63,8 +63,7 @@ const UserProfile = () => {
     }}>
     <div className="py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-12">
-          <h3 className="text-4xl font-bold text-green-700">Welcome To PlantHUB</h3>
+        <div className="flex justify-between items-center mb-2">
         </div>
         <motion.div
   initial={{ opacity: 0, y: 20 }}
@@ -76,7 +75,7 @@ const UserProfile = () => {
     {/* Weather Information */}
     <div className="mb-8">
       <div className="bg-gradient-to-r from-blue-100 to-green-100 rounded-3xl p-6 shadow-lg max-w-6xl mx-auto">
-        <h4 className="text-xl font-semibold text-gray-700 mb-4 text-center">Current Weather</h4>
+        <h4 className="text-2xl font-semibold text-gray-700 mb-8 text-center">Current Weather</h4>
         <UserdashboardContent />
       </div>
     </div>
@@ -97,7 +96,7 @@ const UserProfile = () => {
 </div>
 
       {/* User Info */}
-      <div className="bg-gradient-to-r from-green-400 to-blue-400 rounded-3xl p-6 text-white shadow-lg">
+      <div className="bg-gradient-to-r from-green-500 to-blue-500 rounded-3xl p-6 text-white shadow-lg">
         <div className="flex flex-col items-center">
           <div className="relative mb-4">
             <div className="h-32 w-32 rounded-full bg-white border-4 border-white shadow-lg overflow-hidden">
@@ -118,7 +117,7 @@ const UserProfile = () => {
             </button>
           </div>
           <h2 className="text-2xl font-semibold text-center">{userProfile.name}</h2>
-          <p className="text-green-200 text-lg font-bold mb-4 text-center">Plant Enthusiast</p>
+          <p className="text-white text-lg font-bold mb-4 text-center">Plant Enthusiast</p>
           <div className="grid grid-cols-1 gap-4 w-full">
             <ProfileItem icon={FaEnvelope} value={userProfile.email} />
             <ProfileItem icon={FaPhone} value={userProfile.phoneNumber} />

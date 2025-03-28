@@ -115,10 +115,10 @@ const MyInquiries = () => {
         transition={{ duration: 0.5 }}
       >
       <div className="flex justify-between items-center mb-12">
-        <h1 className="text-4xl font-bold text-green-700">Your Inquiries</h1>
+        <h1 className="text-3xl font-bold text-gray-800 ">Your Inquiries</h1>
         <button
           onClick={handleCreateInquiry}
-          className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 mr-3 mt-4 flex items-center transition duration-300"
+          className="bg-green-700 hover:bg-green-900 text-white text-lg font-bold py-2 px-4 mr-3 mt-4 flex items-center transition duration-300"
         >
           <FaPlus className="mr-2" /> Create Inquiry
         </button>

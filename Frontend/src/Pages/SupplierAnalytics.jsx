@@ -171,8 +171,8 @@ const SupplierAnalytics = () => {
       <SupplierSidebar />
       <div className="flex-1 overflow-auto">
         <div className="container mx-auto px-4 py-28">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-3xl font-bold text-green-800">
+          <div className="flex justify-between items-center mb-12">
+            <h1 className="text-3xl font-bold text-gray-700">
               Supplier Analytics
             </h1>
             {pdfReady ? (
@@ -188,7 +188,7 @@ const SupplierAnalytics = () => {
   >
     {({ blob, url, loading, error }) => (
       <button
-        className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center"
+        className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded flex items-center"
         disabled={loading}
       >
         <FaDownload className="mr-2" />

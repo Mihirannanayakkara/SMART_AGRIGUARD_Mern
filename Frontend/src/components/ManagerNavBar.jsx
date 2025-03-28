@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { FaUser ,FaLeaf } from "react-icons/fa";
 import "../../src/index.css";
 
 const NavigationBar = () => {
@@ -39,12 +40,15 @@ const NavigationBar = () => {
     };
 
     return (
-        <header className="header fixed top-0 left-0 right-0 bg-green-900 backdrop-filter backdrop-blur-lg flex items-center justify-between px-4 py-4 z-50">
-        <div className="w-4/12 pl-6">
-            <h1 className="text-3xl font-bold">
-                <Link to="/" className="text-white hover:text-green-200">AgriGuard</Link>
-            </h1>
-        </div>
+        <header className="header fixed top-0 left-0 right-0 bg-green-900 backdrop-filter backdrop-blur-lg flex items-center justify-between px-5 py-3 z-50">
+        <div className="w-1/4 flex items-center">
+                <FaLeaf className="text-green-200 text-3xl mr-2" />
+                <h1 className="text-3xl font-bold">
+                    <Link to="/loghome" className="text-white hover:text-green-500 flex items-center">
+                        AgriGuard
+                    </Link>
+                </h1>
+            </div>
     
                 <div className="w-3/12 flex justify-end items-center">
                     {isLoggedIn && user ? (
@@ -66,6 +70,13 @@ const NavigationBar = () => {
                         </>
                     ) : null}
                 </div>
+                <div className="w-3/12 flex justify-end items-center mr-8">
+                                <div className="relative group">
+                                    <button className="flex items-center justify-center w-10 h-10 rounded-full bg-green-800 text-white hover:bg-green-700 transition duration-300">
+                                        <FaUser size={20} />
+                                    </button>
+                                </div>
+                            </div>
             </header>
         );
     };

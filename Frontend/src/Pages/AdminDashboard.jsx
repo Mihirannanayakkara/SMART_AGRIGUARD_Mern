@@ -7,6 +7,7 @@ import StatsCard from '../components/StatsCard';
 import UserStatsChart from '../components/UserStatsChart';
 import ArticleCreation from '../components/ArticleCreation';
 import ArticleManagement from '../components/ArticleManagement';
+import ManagerTopNavBar from '../components/ManagerNavBar';
 import axios from 'axios';
 
 const AdminDashboard = () => {
@@ -132,7 +133,8 @@ const AdminDashboard = () => {
       
       {/* Main Content */}
       <div className="flex-1 overflow-y-auto">
-        <div className="p-8">
+      <ManagerTopNavBar/>
+        <div className="p-8 mt-16">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}

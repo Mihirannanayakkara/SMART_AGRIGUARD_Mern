@@ -39,7 +39,7 @@ const AdminSidebar = ({ user }) => {
 
   return (
     <motion.div 
-      className="h-screen bg-white shadow-xl relative"
+      className="h-screen bg-white shadow-xl relative mt-20"
       variants={sidebarVariants}
       initial="expanded"
       animate={isCollapsed ? 'collapsed' : 'expanded'}
@@ -52,20 +52,24 @@ const AdminSidebar = ({ user }) => {
         {isCollapsed ? <FaBars size={20} /> : <FaTimes size={20} />}
       </button>
       
-      <div className="flex flex-col items-center py-6 border-b border-gray-200">
+      <div className="flex flex-col items-center py-8 border-b border-gray-200">
         <motion.div 
-          className="w-20 h-20 rounded-full bg-green-100 overflow-hidden mb-3"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          {user?.profilePic ? (
-            <img src={user.profilePic} alt="Admin" className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-green-600 text-white text-2xl font-bold">
-              {user?.name?.charAt(0) || 'A'}
-            </div>
-          )}
-        </motion.div>
+                  className={`rounded-full bg-green-100 overflow-hidden mb-3`}
+                  animate={{ 
+                    width: isCollapsed ? '48px' : '80px', 
+                    height: isCollapsed ? '48px' : '80px' 
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {user?.profilePic ? (
+                    <img src={user.profilePic} alt="User" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-green-600 text-white font-bold"
+                         style={{ fontSize: isCollapsed ? '16px' : '24px' }}>
+                      {user?.name?.charAt(0) || 'U'}
+                    </div>
+                  )}
+                </motion.div>
         
         {!isCollapsed && (
           <motion.div 
