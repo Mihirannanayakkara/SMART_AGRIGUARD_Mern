@@ -66,15 +66,14 @@ const Navbar = () => {
 
             <div className="flex items-center space-x-8">
               <div className="relative">
-                <motion.button
-                  whileHover="hover"
-                  variants={linkVariants}
+                <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center space-x-1 hover:text-green-300 transition-colors duration-200"
+                  className="flex items-center hover:text-green-500 font-semibold transition-colors duration-200"
+
                 >
                   <span>Services</span>
                   <FaCaretDown />
-                </motion.button>
+                </button>
                 {isDropdownOpen && (
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
@@ -88,12 +87,9 @@ const Navbar = () => {
                   </motion.div>
                 )}
               </div>
-              <motion.div whileHover="hover" variants={linkVariants}>
-                <Link to="/login" className="hover:text-green-300 transition-colors duration-200">Sign In</Link>
-              </motion.div>
-              <motion.div whileHover="hover" variants={linkVariants}>
-                <Link to="/register" className="hover:text-green-300 font-bold transition-colors duration-200">Register</Link>
-              </motion.div>
+              
+              <Link to="/login" className="hover:text-green-500 font-semibold">Sign In</Link>
+              <Link to="/register" className="hover:text-green-500 font-semibold">Register</Link>
             </div>
           </div>
         </motion.nav>
