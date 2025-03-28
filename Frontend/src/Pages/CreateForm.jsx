@@ -21,7 +21,7 @@ export const CreateForm = ({ onClose, onSubmitSuccess }) => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleSaveForm = () => {
+  const handleSaveForm = async () => {
     if (
       !fullname ||
       !email ||
@@ -41,6 +41,9 @@ export const CreateForm = ({ onClose, onSubmitSuccess }) => {
       return;
     }
 
+    // Get user's live geolocation
+    const { latitude, longitude } = await getUserLocation();
+
     const data = {
       fullname,
       email,
@@ -49,6 +52,8 @@ export const CreateForm = ({ onClose, onSubmitSuccess }) => {
       plantName,
       diseaseName,
       issueDescription,
+      latitude,
+      longitude
     };
 
     const userData = JSON.parse(localStorage.getItem("user"));
@@ -79,6 +84,31 @@ export const CreateForm = ({ onClose, onSubmitSuccess }) => {
         enqueueSnackbar("Error submitting form.", { variant: "error" });
         console.log(error);
       });
+  };
+
+
+  // ✅ Function to get user's live geolocation
+  const getUserLocation = async () => {
+    return new Promise((resolve, reject) => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+         (position) => {
+           const { latitude, longitude } = position.coords;
+ 
+           // ✅ Debug: Log location values
+           console.log("Captured Geolocation:", latitude, longitude);
+ 
+           resolve({ latitude, longitude });
+         },
+          (error) => {
+            console.error("Error getting user location:", error);
+            resolve({ latitude: null, longitude: null }); // Ensures form still submits if location access is denied
+          }
+        );
+      } else {
+        resolve({ latitude: null, longitude: null }); // If geolocation is not supported, form will still submit
+      }
+    });
   };
 
   const handleFullnameChange = (e) => {
