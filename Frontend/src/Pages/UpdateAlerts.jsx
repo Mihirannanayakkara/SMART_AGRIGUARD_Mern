@@ -100,7 +100,13 @@ const UpdateAlerts = () => {
   return (
     <>
     <LogingNavBar />
-    <div className="p-6 min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-cover bg-center bg-fixed" 
+        style={{ 
+          backgroundImage: "url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')",
+          backgroundColor: "rgba(243, 244, 246, 0.85)",
+          backgroundBlendMode: "overlay"
+        }}>
+        <div className="p-6">
       <h1 className="text-4xl text-center font-bold text-gray-800 ml-7 mb-9 mt-5">All Alerts</h1>
 
       {loading ? (
@@ -271,6 +277,7 @@ const UpdateAlerts = () => {
           )}
         </>
       )}
+    </div>
     </div>
     </>
   );

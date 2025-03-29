@@ -130,7 +130,7 @@ const HomeMaterial = () => {
         <SupplierSidebar />
         <div className="flex-1 overflow-auto p-8">
           <div className="max-w-7xl mx-auto">
-            <h1 className="text-3xl font-bold text-gray-800 mb-8">Materials</h1>
+            <h1 className="text-3xl font-bold text-gray-800 mt-20 mb-8">Materials</h1>
             <div className="bg-white bg-opacity-30 backdrop-filter backdrop-blur-sm rounded-lg shadow-md p-6 mb-8">
               <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
                 <div className="flex-1 min-w-[200px] relative">
@@ -172,7 +172,7 @@ const HomeMaterial = () => {
               {loading ? (
                 <Spinner />
               ) : (
-                <section className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5 ml-12">
+                <section className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5 ml-6">
                   {filteredAndSortedMaterials.map((material) => (
                     <div
                       key={material._id}

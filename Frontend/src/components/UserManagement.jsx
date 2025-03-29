@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaEdit, FaTrash, FaUserPlus, FaSearch, FaTimes, FaChevronDown, FaFilter } from 'react-icons/fa';
 import defaultAvatar from '../assets/default-avatar.jpg';
 import AdminSidebar from './AdminSidebar';
+import ManagerTopNavBar from '../components/ManagerNavBar';
 
 const API_BASE_URL = 'http://localhost:5557/api';
 
@@ -138,13 +139,16 @@ const UserManagement = () => {
     <div className="flex h-screen bg-gray-50">
       {/* Sidebar */}
       <AdminSidebar user={user} />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Add ManagerTopNavBar here */}
+        <ManagerTopNavBar />
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
       className="container mx-auto px-4 py-8 max-w-4xl"
     >
-      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">User Management</h2>
+      <h2 className="text-3xl mt-16 font-bold mb-6 text-center text-gray-800">User Management</h2>
       <div className="mb-6 flex justify-between items-center">
         <div className="flex items-center">
           <div className="relative mr-4">
@@ -398,6 +402,7 @@ const UserManagement = () => {
           )}
         </AnimatePresence>
       </motion.div>
+      </div>
       </div>
     );
   };
