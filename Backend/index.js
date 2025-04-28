@@ -6,7 +6,7 @@ import FarmerFormRoute from "./Routes/FarmerFormRoutes.js";
 import AiTreatmentRoute from "./Routes/AiTreatmentRoute.js";
 import userRoutes from "./Routes/userRoutes.js"; 
 import testRoute from "./Routes/testRoute.js";  
-import materialRoute from './routes/materialRoute.js'; 
+import materialRoute from './Routes/MaterialRoute.js'; 
 import articleRoutes from './Routes/articleRoutes.js';
 import alertRoutes from "./Routes/alertRoutes.js";
 import ManagerRoutes from "./Routes/ManagerRoutes.js";
