@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import "../../src/index.css";
+import { FaLeaf } from "react-icons/fa";
 
 const NavigationBar = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -38,13 +39,15 @@ const NavigationBar = () => {
     };
 
     return (
-        <header className="header top-0 sticky backdrop-filter backdrop-blur-lg bg-green-900 flex items-center justify-between mx-auto px-16 left-0 w-full z-10">
-            <div className="w-3/12">
-                <h1 className="text-3xl font-bold">
-                    <Link to="/loghome" className="text-white hover:text-green-500">AgriGuard</Link>
-                </h1>
-            </div>
-
+        <header className="header top-0 sticky backdrop-filter backdrop-blur-lg bg-green-900 flex items-center justify-between mx-auto px-8 left-0 w-full z-10">
+          <div className="w-1/4 flex items-center">
+        <FaLeaf className="text-green-200 text-3xl mr-2" />
+        <h1 className="text-3xl font-bold">
+            <Link to="/loghome" className="text-white hover:text-green-500 flex items-center">
+                AgriGuard
+            </Link>
+        </h1>
+    </div>
             <nav className="nav font-semibold text-lg">
                 <ul className="flex items-center justify-center space-x-6">
                     <li className="p-4 border-b-2 border-green-600 border-opacity-0 hover:border-opacity-100 hover:text-green-500 duration-200 cursor-pointer">

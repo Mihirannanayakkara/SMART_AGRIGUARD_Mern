@@ -109,7 +109,59 @@ router.get('/registration-stats', async (req, res) => {
   }
 });
 
+/// Get all users (no authentication required)
+router.get('/', async (req, res) => {
+  try {
+    const users = await User.find({}, '-password');
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching users', error: error.message });
+  }
+});
+
+// Delete user (no authentication required)
+router.delete('/:id', async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ message: 'User deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting user', error: error.message });
+  }
+});
 
 
+// Update user
+router.put('/:id', async (req, res) => {
+  try {
+    const { username, email, role } = req.body;
+    const userId = req.params.id;
+
+    // Check if the email is already in use by another user
+    const existingUser = await User.findOne({ email, _id: { $ne: userId } });
+    if (existingUser) {
+      return res.status(400).json({ message: "Email already in use by another user" });
+    }
+
+    // Check if the username is already taken by another user
+    const existingUsername = await User.findOne({ username, _id: { $ne: userId } });
+    if (existingUsername) {
+      return res.status(400).json({ message: "Username already taken by another user" });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { username, email, role },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({ message: 'User updated successfully', user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating user', error: error.message });
+  }
+});
 
 export default router;  

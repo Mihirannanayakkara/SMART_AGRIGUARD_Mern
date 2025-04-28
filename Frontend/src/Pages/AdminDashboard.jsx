@@ -7,6 +7,7 @@ import StatsCard from '../components/StatsCard';
 import UserStatsChart from '../components/UserStatsChart';
 import ArticleCreation from '../components/ArticleCreation';
 import ArticleManagement from '../components/ArticleManagement';
+import ManagerTopNavBar from '../components/ManagerNavBar';
 import axios from 'axios';
 
 const AdminDashboard = () => {
@@ -25,8 +26,7 @@ const AdminDashboard = () => {
   const [userCount, setUserCount] = useState(0);
   const [articleCount, setArticleCount] = useState(0);
   const [userRegistrationData, setUserRegistrationData] = useState({ labels: [], values: [] });
-
-
+  const [isCollapsed, setIsCollapsed] = useState(false);
 
   useEffect(() => {
     console.log("Raw user data:", localStorage.getItem('user'));
@@ -41,19 +41,15 @@ const AdminDashboard = () => {
      
     setUser(userData);
 
-
-    
-    
     // Fetch dashboard stats from API
     const fetchStats = async () => {
       try {
         // API call here
         // For now, we'll keep using the mock data
         setStats({
-          
           articles: 48,
-          views: 12540,
-          engagement: 67
+          views: 21,
+          engagement: 83.4
         });
         
         // Mock recent activities
@@ -75,17 +71,15 @@ const AdminDashboard = () => {
     fetchStats();
   }, [navigate]);
 
- 
   //fetch user count
-    const fetchUserCount = async () => {
-      try {
-        const response = await axios.get('http://localhost:5557/api/users/count');
-        setUserCount(response.data.count);
-      } catch (error) {
-        console.error('Error fetching user count:', error);
-      }
-    };
-
+  const fetchUserCount = async () => {
+    try {
+      const response = await axios.get('http://localhost:5557/api/users/count');
+      setUserCount(response.data.count);
+    } catch (error) {
+      console.error('Error fetching user count:', error);
+    }
+  };
 
   //Fetch Article Count
   const fetchArticleCount = async () => {
@@ -102,7 +96,6 @@ const AdminDashboard = () => {
     fetchArticleCount();
     fetchUserRegistrationData();
   }, []);
-
 
   //fetch user registration data for chart
   const fetchUserRegistrationData = async () => {
@@ -131,11 +124,7 @@ const AdminDashboard = () => {
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-600"></div>
       </div>
     );
-
-
   }
-
-  
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -144,7 +133,8 @@ const AdminDashboard = () => {
       
       {/* Main Content */}
       <div className="flex-1 overflow-y-auto">
-        <div className="p-8">
+      <ManagerTopNavBar/>
+        <div className="p-8 mt-16">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -156,12 +146,12 @@ const AdminDashboard = () => {
           
           {/* Stats Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <StatsCard 
-            title="Total Users" 
-            value={userCount} 
-            icon={<FaUsers size={24} className="text-white" />} 
-            color="bg-green-600"
-             onClick={() => navigate('/admin/users')}
+            <StatsCard 
+              title="Total Users" 
+              value={userCount} 
+              icon={<FaUsers size={24} className="text-white" />} 
+              color="bg-green-600"
+              onClick={() => navigate('/admin/users')}
             />
             <StatsCard 
               title="Articles Published" 
@@ -169,7 +159,7 @@ const AdminDashboard = () => {
               icon={<FaNewspaper size={24} className="text-white" />} 
               color="bg-blue-600"
               onClick={() => navigate('/admin/articles')}
-/>
+            />
             <StatsCard 
               title="Total Views" 
               value={stats.views.toLocaleString()} 
@@ -185,8 +175,6 @@ const AdminDashboard = () => {
               onClick={() => navigate('/admin/analytics')}
             />
           </div>
-
-          
           
           {/* Charts and Additional Content */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
@@ -267,39 +255,39 @@ const AdminDashboard = () => {
               onClick={() => setShowArticleManagement(true)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-            >
-              <div className="flex items-center cursor-pointer">
-                <div className="p-4 bg-blue-100 rounded-lg mr-4">
-                  <FaEdit className="text-blue-600" size={24} />
+              >
+                <div className="flex items-center cursor-pointer">
+                  <div className="p-4 bg-blue-100 rounded-lg mr-4">
+                    <FaEdit className="text-blue-600" size={24} />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800">Manage Articles</h3>
+                    <p className="text-sm text-gray-500">Edit or delete existing articles</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800">Manage Articles</h3>
-                  <p className="text-sm text-gray-500">Edit or delete existing articles</p>
-                </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </div>
           </div>
+          
+          {/* Footer */}
+          <footer className="p-6 text-center text-gray-500 text-sm">
+            <p>© 2023 AgriGuard Admin Dashboard. All rights reserved.</p>
+          </footer>
         </div>
-        
-        
-        {/* Footer */}
-        <footer className="p-6 text-center text-gray-500 text-sm">
-          <p>© 2023 AgriGuard Admin Dashboard. All rights reserved.</p>
-        </footer>
+  
+        {/* Article Creation Modal */}
+        <ArticleCreation
+          isOpen={showArticleCreation}
+          onClose={() => setShowArticleCreation(false)}
+        />
+  
+        {/* Article Management Modal */}
+        <ArticleManagement
+          isOpen={showArticleManagement}
+          onClose={() => setShowArticleManagement(false)}
+        />
       </div>
-         {/* Article Creation Modal */}
-      <ArticleCreation
-        isOpen={showArticleCreation}
-        onClose={() => setShowArticleCreation(false)}
-      />
-
-      {/* Article Management Modal */}
-      <ArticleManagement
-        isOpen={showArticleManagement}
-        onClose={() => setShowArticleManagement(false)}
-      />
-    </div>
-  );
-};
-
-export default AdminDashboard;
+    );
+  };
+  
+  export default AdminDashboard;

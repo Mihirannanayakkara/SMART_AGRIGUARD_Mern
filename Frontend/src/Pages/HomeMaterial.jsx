@@ -81,13 +81,13 @@ const HomeMaterial = () => {
   const getCategoryColor = (category) => {
     switch (category.toLowerCase()) {
       case "fertilizer":
-        return "bg-blue-300 text-white";
+        return "bg-blue-400 text-white";
       case "pesticide":
-        return "bg-red-300 text-white";
+        return "bg-red-400 text-white";
       case "herbicide":
-        return "bg-green-300 text-white";
+        return "bg-green-400 text-white";
       default:
-        return "bg-gray-300 text-white";
+        return "bg-gray-400 text-white";
     }
   };
 
@@ -114,14 +114,24 @@ const HomeMaterial = () => {
     });
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-100 relative">
+    {/* Background Image */}
+    <div
+      className="absolute inset-0 bg-cover bg-center bg-fixed"
+      style={{
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')",
+        backgroundColor: "rgba(243, 244, 246, 1.2)",
+        backgroundBlendMode: "overlay",
+      }}
+    ></div>
       <ManagerNavBar />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden relative z-10">
         <SupplierSidebar />
         <div className="flex-1 overflow-auto p-8">
           <div className="max-w-7xl mx-auto">
-            <h1 className="text-3xl font-bold text-gray-800 mb-8">Materials</h1>
-            <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h1 className="text-3xl font-bold text-gray-800 mt-20 mb-8">Materials</h1>
+            <div className="bg-white bg-opacity-30 backdrop-filter backdrop-blur-sm rounded-lg shadow-md p-6 mb-8">
               <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
                 <div className="flex-1 min-w-[200px] relative">
                   <input
@@ -129,14 +139,14 @@ const HomeMaterial = () => {
                     placeholder="Search materials..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full p-3 pl-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+                    className="w-full p-3 pl-10 border-2 border-green-500 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
                   />
                   <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl" />
                 </div>
                 <select
                   value={filterCategory}
                   onChange={(e) => setFilterCategory(e.target.value)}
-                  className="p-3 border border-gray-300 rounded-md text-sm"
+                  className="p-3 border border-green-300 rounded-md text-sm bg-green-100"
                 >
                   <option value="">All Categories</option>
                   <option value="Fertilizer">Fertilizer</option>
@@ -145,14 +155,14 @@ const HomeMaterial = () => {
                 </select>
                 <button
                   onClick={() => handleSort("materialName")}
-                  className="p-3 bg-gray-100 text-gray-700 rounded-md hover:bg-green-500 hover:text-white transition-colors flex items-center text-sm"
+                  className="p-3 bg-green-100 text-gray-700 rounded-md hover:bg-green-500 hover:text-white transition-colors flex items-center text-sm"
                 >
                   <FaSort className="mr-2" />
                   Sort by Name
                 </button>
                 <button
                   onClick={() => handleSort("pricePerUnit")}
-                  className="p-3 bg-gray-100 text-gray-700 rounded-md hover:bg-green-500 hover:text-white transition-colors flex items-center text-sm"
+                  className="p-3 bg-green-100 text-gray-700 rounded-md hover:bg-green-500 hover:text-white transition-colors flex items-center text-sm"
                 >
                   <FaSort className="mr-2" />
                   Sort by Price
@@ -162,7 +172,7 @@ const HomeMaterial = () => {
               {loading ? (
                 <Spinner />
               ) : (
-                <section className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5">
+                <section className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5 ml-6">
                   {filteredAndSortedMaterials.map((material) => (
                     <div
                       key={material._id}
@@ -239,14 +249,14 @@ const HomeMaterial = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black bg-opacity-60 backdrop-filter backdrop-blur-sm flex items-center justify-center z-50"
     >
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
         transition={{ duration: 0.3 }}
-        className="bg-white rounded-lg p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+        className="bg-white bg-opacity-90 rounded-lg p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto"
       >
         <EditMaterial
           id={editingMaterial}
@@ -269,7 +279,7 @@ const HomeMaterial = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            className="fixed inset-0 bg-black bg-opacity-60 backdrop-filter backdrop-blur-md flex items-center justify-center z-50"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -289,7 +299,7 @@ const HomeMaterial = () => {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-60 backdrop-filter backdrop-blur-md flex items-center justify-center z-50">
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}

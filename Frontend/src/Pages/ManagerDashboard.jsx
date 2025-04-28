@@ -228,7 +228,7 @@ const ManagerDashboard = () => {
                       <th className="p-4 text-left">Farmer</th>
                       <th className="p-4 text-left">Plant</th>
                       <th className="p-4 text-left">Disease</th>
-                      <th className="p-4 text-left">Issue</th>
+                      
                       <th className="p-4 text-left">Reply</th>
                       <th className="p-4 text-left"></th>
                       <th className="p-4 text-left">Status</th>
@@ -241,17 +241,17 @@ const ManagerDashboard = () => {
       <td className="p-4">{form.fullname}</td>
       <td className="p-4">{form.plantName}</td>
       <td className="p-4">{form.diseaseName}</td>
-      <td className="p-4">
+      {/* <td className="p-4">
         {form.issueDescription.length > 10
           ? `${form.issueDescription.slice(0, 10)}...`
           : form.issueDescription}
-      </td>
+      </td> */}
       <td className="p-4">
         {form.reply
           ? form.reply.length > 10
             ? `${form.reply.slice(0, 10)}...`
             : form.reply
-          : "No reply yet"}
+          : "No reply"}
       </td>
       <td className="p-4 flex gap-2">
         {form.reply && (

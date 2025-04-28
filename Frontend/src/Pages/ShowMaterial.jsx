@@ -47,7 +47,7 @@ const ShowMaterial = ({ id, onClose }) => {
   if (!material) return <div>Material not found</div>;
 
   return (
-    <div className="relative max-w-3xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="relative max-w-3xl mx-auto rounded-lg shadow-lg overflow-hidden">
       <button
         onClick={onClose}
         className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 z-10"
@@ -105,7 +105,7 @@ const ShowMaterial = ({ id, onClose }) => {
             <div className="mt-4">
               <button
                 onClick={() => setShowUsageModal(true)}
-                className="w-full rounded-full bg-orange-500 py-2 px-4 text-sm font-semibold text-white transition-all duration-300 shadow-sm hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 active:bg-orange-700"
+                className="w-full rounded-full bg-green-600 py-2 px-4 text-sm font-semibold text-white transition-all duration-300 shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-700 focus:ring-opacity-50 active:bg-green-700"
                 type="button"
               >
                 View Usage Instructions
@@ -141,7 +141,7 @@ const ShowMaterial = ({ id, onClose }) => {
               <div className="flex justify-end">
                 <button
                   onClick={() => setShowUsageModal(false)}
-                  className="px-4 py-2 bg-orange-500 text-white text-sm rounded-full hover:bg-orange-600 transition-colors duration-200 transform hover:scale-105"
+                  className="px-4 py-2 bg-green-600 text-white text-sm rounded-full hover:bg-green-700 transition-colors duration-200 transform hover:scale-105"
                 >
                   Close
                 </button>
