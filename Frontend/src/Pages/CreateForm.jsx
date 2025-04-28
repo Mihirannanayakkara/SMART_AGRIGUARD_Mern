@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
+import { useDropzone } from "react-dropzone";
+import { useCallback, useEffect } from "react";
 
 export const CreateForm = ({ onClose, onSubmitSuccess }) => {
   const [fullname, setFullname] = useState("");
@@ -11,6 +13,7 @@ export const CreateForm = ({ onClose, onSubmitSuccess }) => {
   const [plantName, setPlantName] = useState("");
   const [diseaseName, setDiseaseName] = useState("");
   const [issueDescription, setIssueDescription] = useState("");
+  const [image, setImage] = useState(null);
 
   const [fullnameError, setFullnameError] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -30,6 +33,7 @@ export const CreateForm = ({ onClose, onSubmitSuccess }) => {
       !plantName ||
       !diseaseName ||
       !issueDescription ||
+      !image ||
       fullnameError ||
       emailError ||
       locationError ||
@@ -53,7 +57,8 @@ export const CreateForm = ({ onClose, onSubmitSuccess }) => {
       diseaseName,
       issueDescription,
       latitude,
-      longitude
+      longitude,
+      image,
     };
 
     const userData = JSON.parse(localStorage.getItem("user"));
@@ -86,20 +91,19 @@ export const CreateForm = ({ onClose, onSubmitSuccess }) => {
       });
   };
 
-
   // ✅ Function to get user's live geolocation
   const getUserLocation = async () => {
     return new Promise((resolve, reject) => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-         (position) => {
-           const { latitude, longitude } = position.coords;
- 
-           // ✅ Debug: Log location values
-           console.log("Captured Geolocation:", latitude, longitude);
- 
-           resolve({ latitude, longitude });
-         },
+          (position) => {
+            const { latitude, longitude } = position.coords;
+
+            // ✅ Debug: Log location values
+            console.log("Captured Geolocation:", latitude, longitude);
+
+            resolve({ latitude, longitude });
+          },
           (error) => {
             console.error("Error getting user location:", error);
             resolve({ latitude: null, longitude: null }); // Ensures form still submits if location access is denied
@@ -158,6 +162,51 @@ export const CreateForm = ({ onClose, onSubmitSuccess }) => {
       setContactNumberError("");
     }
   };
+
+  const onDrop = useCallback(
+    (acceptedFiles, fileRejections) => {
+      if (acceptedFiles.length > 0) {
+        const file = acceptedFiles[0];
+        if (file.size > 30720) {
+          // 30KB = 30 * 1024 bytes
+          enqueueSnackbar("Image size should not exceed 30KB", {
+            variant: "warning",
+          });
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          setImage(reader.result);
+        };
+        reader.readAsDataURL(file);
+      }
+
+      if (fileRejections.length > 0) {
+        fileRejections.forEach((rejection) => {
+          if (rejection.errors[0].code === "file-too-large") {
+            enqueueSnackbar(`Max size is 30KB.`, { variant: "error" });
+          }
+        });
+      }
+    },
+    [enqueueSnackbar]
+  );
+
+  const { getRootProps, getInputProps, fileRejections } = useDropzone({
+    onDrop,
+    accept: "image/*",
+    maxSize: 30720, // 30KB
+  });
+
+  useEffect(() => {
+    fileRejections.forEach((rejection) => {
+      if (rejection.errors[0].code === "file-too-large") {
+        enqueueSnackbar(`${rejection.file.name} is too large.`, {
+          variant: "error",
+        });
+      }
+    });
+  }, [fileRejections, enqueueSnackbar]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm">
@@ -343,6 +392,35 @@ export const CreateForm = ({ onClose, onSubmitSuccess }) => {
                   placeholder="Enter disease name (if known)"
                 />
               </div>
+              <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Upload Plant Disease Image <span className="text-red-500">*</span>
+              </label>
+
+              <div
+                {...getRootProps()}
+                className="w-full px-4 py-10 border-2 border-dashed rounded-lg cursor-pointer text-center
+               transition hover:border-green-400 hover:bg-green-50
+               border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-300"
+              >
+                <input {...getInputProps()} />
+                {image ? (
+                  <img
+                    src={image}
+                    alt="Preview"
+                    className="mx-auto max-h-40 object-contain"
+                  />
+                ) : (
+                  <p className="text-gray-500">
+                    Drag and drop an image here, or click to select
+                  </p>
+                )}
+              </div>
+
+              <p className="text-sm text-gray-400 mt-2">
+                Max file size: 30KB. Accepted formats: jpg, png, etc.
+              </p>
+            </div>
             </div>
           </div>
 

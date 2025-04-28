@@ -15,7 +15,8 @@ router.post('/', authenticateToken, async (request,response)=>{
             !request.body.contactNumber ||
             !request.body.plantName ||
             !request.body.diseaseName ||
-            !request.body.issueDescription
+            !request.body.issueDescription||
+            !request.body.image
         ){
             return response.status(400).send({
                 message:'Please send all required fields'
@@ -32,7 +33,8 @@ router.post('/', authenticateToken, async (request,response)=>{
             diseaseName: request.body.diseaseName,
             issueDescription: request.body.issueDescription,
             latitude: request.body.latitude,
-            longitude: request.body.longitude
+            longitude: request.body.longitude,
+            image: request.body.image
         };
   
         const farmer = await Farmer.create(newFarmerForm);
@@ -97,7 +99,9 @@ router.get('/:id', authenticateToken, async (request , response)=>{
         }
 
         
-        return response.status(200).json({ farmer });
+        return response.status(200).json({ 
+farmer
+    });
 
     } catch (error) {
         console.error(error.message);

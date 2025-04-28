@@ -134,7 +134,7 @@ const MyInquiries = () => {
           >
             <div className="h-48 bg-green-100 relative">
               <img
-                src={placeholderImages[index % placeholderImages.length]}
+                src={inquiry.image? inquiry.image : placeholderImages[index % placeholderImages.length]}
                 alt={`Plant disease: ${inquiry.diseaseName}`}
                 className="w-full h-full object-cover"
               />
@@ -286,10 +286,7 @@ const InquiryDetailsPopup = ({ inquiry, onClose }) => {
           {/* Left side - Image */}
           <div className="w-2/5 bg-green-100">
             <img
-              src={
-                inquiry.imageUrl ||
-                "https://thumbs.dreamstime.com/b/plant-disease-mango-laves-disease-fungi-plant-disease-100851421.jpg?w=360"
-              }
+              src={inquiry.image? inquiry.image : placeholderImages[index % placeholderImages.length]}
               alt={inquiry.plantName}
               className="w-full h-full object-cover"
             />
