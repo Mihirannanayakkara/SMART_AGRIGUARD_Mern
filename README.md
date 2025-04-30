@@ -39,3 +39,22 @@ A web-based AI-powered platform that helps **farmers, home gardeners, and agricu
 
 ### 🔐 Admin Dashboard
 - Admins manage users, content, and view system insights.
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js
+- MongoDB
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/plant-disease-ai.git
+cd plant-disease-ai
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
