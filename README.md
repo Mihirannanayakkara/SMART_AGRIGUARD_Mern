@@ -13,7 +13,7 @@ A web-based AI-powered platform that helps **farmers, home gardeners, and agricu
   - Custom trained **Plant Disease Classification Model**
   - **Gemini API** (via Google AI Studio and Google Cloud) for treatment recommendations
 - **Geo API**: For bubble map visualization of plant disease locations
-- **Authentication & Authorization**: (If included)
+- **Authentication & Authorization**
 
 ---
 
