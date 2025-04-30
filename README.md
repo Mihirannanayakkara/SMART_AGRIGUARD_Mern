@@ -50,8 +50,7 @@ A web-based AI-powered platform that helps **farmers, home gardeners, and agricu
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/plant-disease-ai.git
-cd plant-disease-ai
+git clone https://github.com/Mihirannanayakkara/SMART_AGRIGUARD_Mern.git
 
 # Install dependencies
 npm install
