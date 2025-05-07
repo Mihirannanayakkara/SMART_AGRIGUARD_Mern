@@ -40,8 +40,7 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
   const [categoryOptions] = useState([
     "Fertilizer",
     "Pesticide",
-    "Seeds",
-    "Equipment",
+    "Herbicide"
   ]);
 
   useEffect(() => {
