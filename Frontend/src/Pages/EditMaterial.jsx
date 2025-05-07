@@ -37,11 +37,7 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
     "Weed Killers",
   ]);
   const [unitTypeOptions] = useState(["kg", "liters", "packs"]);
-  const [categoryOptions] = useState([
-    "Fertilizer",
-    "Pesticide",
-    "Herbicide"
-  ]);
+  const [categoryOptions] = useState(["Fertilizer", "Pesticide", "Herbicide"]);
 
   useEffect(() => {
     setLoading(true);
@@ -67,7 +63,7 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
       ...formData,
       [name]: value,
     });
-    
+
     // Clear any errors for this field
     if (errors[name]) {
       setErrors({
@@ -82,12 +78,12 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
     const updatedDiseaseUsage = checked
       ? [...formData.diseaseUsage, value]
       : formData.diseaseUsage.filter((disease) => disease !== value);
-    
+
     setFormData({
       ...formData,
       diseaseUsage: updatedDiseaseUsage,
     });
-   
+
     if (errors.diseaseUsage) {
       setErrors({
         ...errors,
@@ -98,12 +94,12 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
 
   const handlePriceChange = (e) => {
     const value = e.target.value;
-    
+
     setFormData({
       ...formData,
       pricePerUnit: value,
     });
-    
+
     if (value < 0) {
       setErrors({
         ...errors,
@@ -120,16 +116,17 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
   const handleSupplierContactChange = (e) => {
     const value = e.target.value;
     const phoneRegex = /^(07|08|01)\d{8}$/;
-    
+
     setFormData({
       ...formData,
       supplierContact: value,
     });
-    
+
     if (value && !phoneRegex.test(value)) {
       setErrors({
         ...errors,
-        supplierContact: "Please enter a valid 10-digit number starting with 07, 08 or 01",
+        supplierContact:
+          "Please enter a valid 10-digit number starting with 07, 08 or 01",
       });
     } else if (errors.supplierContact) {
       setErrors({
@@ -167,7 +164,12 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
       const response = await axios.put(`http://localhost:5557/materials/${id}`, formData);
       setLoading(false);
       enqueueSnackbar("Material updated successfully", { variant: "success" });
-      onUpdate(response.data); // Pass the updated material data to the parent component
+      
+      // Make sure we're passing the complete updated material data to the parent
+      if (onUpdate && typeof onUpdate === 'function') {
+        onUpdate(response.data.data || response.data);
+      }
+      
       onClose(); // Close the popup
     } catch (error) {
       console.error("Error updating material:", error);
@@ -184,28 +186,36 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
       <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-4/5 lg:w-3/4 xl:w-2/3 shadow-lg rounded-md bg-white">
         <div className="flex justify-between items-center border-b pb-3">
-          <h3 className="text-2xl font-semibold text-gray-800">Edit Material</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <h3 className="text-2xl font-semibold text-gray-800">
+            Edit Material
+          </h3>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-gray-600"
+          >
             <FaTimes size={24} />
           </button>
         </div>
-  
+
         <div className="mt-4 max-h-[70vh] overflow-y-auto">
           <form onSubmit={handleSubmit} className="space-y-6 ">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="md:col-span-1">
-                <div className= "p-4 rounded-lg shadow-lg">
-                <div className="flex items-center justify-center">
-                  <img
-                    src={formData.image}
-                    alt={formData.materialName}
-                    className="w-50 h-48 object-cover rounded-lg mb-4"
-                  />
+                <div className="p-4 rounded-lg shadow-lg">
+                  <div className="flex items-center justify-center">
+                    <img
+                      src={formData.image}
+                      alt={formData.materialName}
+                      className="w-50 h-48 object-cover rounded-lg mb-4"
+                    />
                   </div>
                   <div className="space-y-4">
                     {/* Direct input fields without custom components */}
                     <div>
-                      <label htmlFor="materialName" className="block text-sm font-medium text-gray-700">
+                      <label
+                        htmlFor="materialName"
+                        className="block text-sm font-medium text-gray-700"
+                      >
                         Material Name <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -215,14 +225,23 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                         value={formData.materialName || ""}
                         onChange={handleInputChange}
                         className={`mt-1 block w-full border ${
-                          errors.materialName ? "border-red-500" : "border-gray-300"
+                          errors.materialName
+                            ? "border-red-500"
+                            : "border-gray-300"
                         } rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
                       />
-                      {errors.materialName && <p className="mt-1 text-sm text-red-500">{errors.materialName}</p>}
+                      {errors.materialName && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.materialName}
+                        </p>
+                      )}
                     </div>
-                    
+
                     <div>
-                      <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+                      <label
+                        htmlFor="category"
+                        className="block text-sm font-medium text-gray-700"
+                      >
                         Category <span className="text-red-500">*</span>
                       </label>
                       <select
@@ -241,11 +260,18 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                           </option>
                         ))}
                       </select>
-                      {errors.category && <p className="mt-1 text-sm text-red-500">{errors.category}</p>}
+                      {errors.category && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.category}
+                        </p>
+                      )}
                     </div>
-                    
+
                     <div>
-                      <label htmlFor="pricePerUnit" className="block text-sm font-medium text-gray-700">
+                      <label
+                        htmlFor="pricePerUnit"
+                        className="block text-sm font-medium text-gray-700"
+                      >
                         Price per Unit <span className="text-red-500">*</span>
                       </label>
                       <div className="mt-1 relative rounded-md shadow-sm">
@@ -259,15 +285,24 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                           value={formData.pricePerUnit || ""}
                           onChange={handlePriceChange}
                           className={`block w-full pl-10 pr-12 border ${
-                            errors.pricePerUnit ? "border-red-500" : "border-gray-300"
+                            errors.pricePerUnit
+                              ? "border-red-500"
+                              : "border-gray-300"
                           } rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
                         />
                       </div>
-                      {errors.pricePerUnit && <p className="mt-1 text-sm text-red-500">{errors.pricePerUnit}</p>}
+                      {errors.pricePerUnit && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.pricePerUnit}
+                        </p>
+                      )}
                     </div>
-                    
+
                     <div>
-                      <label htmlFor="unitType" className="block text-sm font-medium text-gray-700">
+                      <label
+                        htmlFor="unitType"
+                        className="block text-sm font-medium text-gray-700"
+                      >
                         Unit Type <span className="text-red-500">*</span>
                       </label>
                       <select
@@ -286,12 +321,16 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                           </option>
                         ))}
                       </select>
-                      {errors.unitType && <p className="mt-1 text-sm text-red-500">{errors.unitType}</p>}
+                      {errors.unitType && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.unitType}
+                        </p>
+                      )}
                     </div>
-                    </div>
+                  </div>
                 </div>
               </div>
-  
+
               <div className="md:col-span-2 space-y-6">
                 <div className="bg-white shadow rounded-lg p-6">
                   <h3 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
@@ -305,14 +344,18 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                     onChange={handleInputChange}
                     rows="4"
                     className={`mt-1 block w-full border ${
-                      errors.usageInstructions ? "border-red-500" : "border-gray-300"
+                      errors.usageInstructions
+                        ? "border-red-500"
+                        : "border-gray-300"
                     } rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-green-500 focus:border-green-500`}
                   ></textarea>
                   {errors.usageInstructions && (
-                    <p className="mt-1 text-sm text-red-500">{errors.usageInstructions}</p>
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.usageInstructions}
+                    </p>
                   )}
                 </div>
-  
+
                 <div className="bg-white shadow rounded-lg p-6">
                   <h3 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
                     <FaUser className="mr-2 text-indigo-500" />
@@ -320,7 +363,10 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                   </h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="supplierName" className="block text-sm font-medium text-gray-700">
+                      <label
+                        htmlFor="supplierName"
+                        className="block text-sm font-medium text-gray-700"
+                      >
                         Supplier Name <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -330,15 +376,25 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                         value={formData.supplierName || ""}
                         onChange={handleInputChange}
                         className={`mt-1 block w-full border ${
-                          errors.supplierName ? "border-red-500" : "border-gray-300"
+                          errors.supplierName
+                            ? "border-red-500"
+                            : "border-gray-300"
                         } rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
                       />
-                      {errors.supplierName && <p className="mt-1 text-sm text-red-500">{errors.supplierName}</p>}
+                      {errors.supplierName && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.supplierName}
+                        </p>
+                      )}
                     </div>
-                    
+
                     <div>
-                      <label htmlFor="supplierContact" className="block text-sm font-medium text-gray-700">
-                        Contact Information <span className="text-red-500">*</span>
+                      <label
+                        htmlFor="supplierContact"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Contact Information{" "}
+                        <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -347,14 +403,20 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                         value={formData.supplierContact || ""}
                         onChange={handleSupplierContactChange}
                         className={`mt-1 block w-full border ${
-                          errors.supplierContact ? "border-red-500" : "border-gray-300"
+                          errors.supplierContact
+                            ? "border-red-500"
+                            : "border-gray-300"
                         } rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
                       />
-                      {errors.supplierContact && <p className="mt-1 text-sm text-red-500">{errors.supplierContact}</p>}
+                      {errors.supplierContact && (
+                        <p className="mt-1 text-sm text-red-500">
+                          {errors.supplierContact}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
-  
+
                 <div className="bg-white shadow rounded-lg p-6">
                   <h3 className="text-xl font-semibold mb-4 text-gray-800 flex items-center">
                     <FaTint className="mr-2 text-green-500" />
@@ -367,23 +429,30 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
                           type="checkbox"
                           id={option}
                           value={option}
-                          checked={formData.diseaseUsage?.includes(option) || false}
+                          checked={
+                            formData.diseaseUsage?.includes(option) || false
+                          }
                           onChange={handleDiseaseChange}
                           className="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
                         />
-                        <label htmlFor={option} className="ml-2 block text-sm text-gray-900">
+                        <label
+                          htmlFor={option}
+                          className="ml-2 block text-sm text-gray-900"
+                        >
                           {option}
                         </label>
                       </div>
                     ))}
                   </div>
                   {errors.diseaseUsage && (
-                    <p className="mt-1 text-sm text-red-500">{errors.diseaseUsage}</p>
+                    <p className="mt-1 text-sm text-red-500">
+                      {errors.diseaseUsage}
+                    </p>
                   )}
                 </div>
               </div>
             </div>
-  
+
             <div className="flex justify-end space-x-4 mt-6">
               <button
                 type="button"
