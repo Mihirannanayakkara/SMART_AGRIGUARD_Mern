@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { FaSort, FaEye, FaShoppingCart, FaLeaf, FaPlus, FaMinus } from 'react-icons/fa';
+import { FaSort, FaPlus, FaMinus } from 'react-icons/fa';
 import { MdSearch } from 'react-icons/md';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import Spinner from '../components/Spinner';
 import UserTopNavbar from '../components/UserTopNavbar';
 import AgriStoreHeader from '../components/AgriStoreHeader';
+import MaterialDetailsModal from '../components/MaterialDetailsModal';
 
 const BuyMaterial = () => {
   const [materials, setMaterials] = useState([]);
@@ -15,6 +16,9 @@ const BuyMaterial = () => {
   const [sortOrder, setSortOrder] = useState('asc');
   const [filterCategory, setFilterCategory] = useState('');
   const [cart, setCart] = useState({});
+  const [selectedMaterial, setSelectedMaterial] = useState(null);
+  const [materialDetails, setMaterialDetails] = useState(null);
+  const [loadingDetails, setLoadingDetails] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -48,6 +52,26 @@ const BuyMaterial = () => {
       }
       return { ...prevCart, [materialId]: newQuantity };
     });
+  };
+
+  const openMaterialDetails = (materialId) => {
+    setLoadingDetails(true);
+    setSelectedMaterial(materialId);
+    
+    axios.get(`http://localhost:5557/materials/${materialId}`)
+      .then(response => {
+        setMaterialDetails(response.data);
+        setLoadingDetails(false);
+      })
+      .catch(error => {
+        console.error("Error fetching material details:", error);
+        setLoadingDetails(false);
+      });
+  };
+
+  const closeMaterialDetails = () => {
+    setSelectedMaterial(null);
+    setMaterialDetails(null);
   };
 
   const filteredAndSortedMaterials = materials
@@ -154,12 +178,12 @@ const BuyMaterial = () => {
                       Add
                     </button>
                   </div>
-                  <Link 
-                    to={`/materials/details/${material._id}`} 
-                    className="block text-center mt-4 text-sm text-green-600 hover:text-green-800 transition-colors "
+                  <button 
+                    onClick={() => openMaterialDetails(material._id)}
+                    className="block w-full text-center mt-4 text-sm text-green-600 hover:text-green-800 transition-colors"
                   >
                     View Details
-                  </Link>
+                  </button>
                 </div>
               </div>
             ))}
@@ -172,6 +196,20 @@ const BuyMaterial = () => {
           </div>
         )}
       </div>
+
+      {/* Material Details Modal - Now using the separate component */}
+      <AnimatePresence>
+        {selectedMaterial && (
+          <MaterialDetailsModal
+            selectedMaterial={selectedMaterial}
+            materialDetails={materialDetails}
+            loadingDetails={loadingDetails}
+            closeMaterialDetails={closeMaterialDetails}
+            handleQuantityChange={handleQuantityChange}
+            cart={cart}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
