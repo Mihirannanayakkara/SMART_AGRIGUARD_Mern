@@ -246,12 +246,14 @@ const EditMaterial = ({ id, onClose, onUpdate }) => {
             <form onSubmit={handleSubmit} className="space-y-6 ">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="md:col-span-1">
-                  <div className="bg-green-50 p-4 rounded-lg shadow-lg">
+                  <div className= "p-4 rounded-lg shadow-lg">
+                  <div className="flex items-center justify-center">
                     <img
                       src={formData.image}
                       alt={formData.materialName}
                       className="w-50 h-48 object-cover rounded-lg mb-4"
                     />
+                    </div>
                     <div className="space-y-4">
                       <InputField
                         label="Material Name"
