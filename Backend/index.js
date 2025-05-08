@@ -10,10 +10,13 @@ import materialRoute from './Routes/MaterialRoute.js';
 import articleRoutes from './Routes/articleRoutes.js';
 import alertRoutes from "./Routes/alertRoutes.js";
 import ManagerRoutes from "./Routes/ManagerRoutes.js";
+import activityRoutes from './Routes/activityRoutes.js';
 
 
 
 const app = express();
+
+
 
 
 // Middleware for parsing request body
@@ -42,6 +45,7 @@ app.use("/farmer", FarmerFormRoute);
 app.use("/ai", AiTreatmentRoute);
 app.use("/api/articles", articleRoutes);
 app.use("/api/users", userRoutes);
+app.use('/api/activities', activityRoutes);
 
 app.use('/manager', ManagerRoutes);
 app.use('/alerts', alertRoutes);

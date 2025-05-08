@@ -2,6 +2,8 @@ import express from 'express';
 import Article from '../Models/Article.js';
 import multer from 'multer';
 import path from 'path';
+import Activity from "../Models/Activity.js";
+
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -38,6 +40,17 @@ router.post('/', upload.fields([{ name: 'image', maxCount: 1 }, { name: 'video',
     });
 
     await newArticle.save();
+
+     // Log the activity
+     const newActivity = new Activity({
+      type: 'article',
+      action: 'Article published',
+      name: title,
+      articleId: newArticle._id
+    });
+    
+    await newActivity.save();
+
     return res.status(201).json({ message: 'Article created successfully', article: newArticle });
 
 
@@ -103,6 +116,16 @@ router.put('/:id', async (req, res) => {
       { title, content, link, image, video, updatedAt: Date.now() },
       { new: true }
     );
+
+     // Log the activity
+     const updateActivity = new Activity({
+      type: 'article',
+      action: 'Article edited',
+      name: title,
+      articleId: id
+    });
+    
+    await updateActivity.save();
 
     if (!result) {
       return res.status(404).json({ message: 'Article not found' });
