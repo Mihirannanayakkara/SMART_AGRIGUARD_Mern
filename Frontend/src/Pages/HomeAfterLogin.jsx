@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaLeaf, FaArrowDown, FaCamera, FaCloudUploadAlt, FaRobot, FaBullhorn } from 'react-icons/fa';
+import { FaLeaf, FaArrowDown, FaCamera, FaCloudUploadAlt, FaRobot, FaBullhorn, FaRedo } from 'react-icons/fa';
 import { useEffect } from 'react';
 import axios from 'axios';
 import LogingNavBar from '../components/LogingNavBar';
@@ -9,6 +9,9 @@ const HomeAfterLogin = () => {
   const scanRef = useRef(null);
   const [showScanModal, setShowScanModal] = useState(false);
   const [materials, setMaterials] = useState([]);
+  const [image, setImage] = useState(null);
+  const [prediction, setPrediction] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const scrollToScan = () => {
     scanRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -26,6 +29,40 @@ const HomeAfterLogin = () => {
 
     fetchMaterials();
   }, []);
+
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+    setPrediction(null); // Reset prediction when a new image is selected
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!image) return;
+
+    const formData = new FormData();
+    formData.append('file', image);
+
+    setLoading(true);
+
+    try {
+      const response = await axios.post('http://localhost:5000/predict', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      setPrediction(response.data.predicted_label);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      setPrediction('Error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRetry = () => {
+    setImage(null);
+    setPrediction(null);
+  };
 
   return (
     <div className="min-h-screen bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')" }}>
@@ -202,22 +239,40 @@ const HomeAfterLogin = () => {
             >
               <h3 className="text-2xl font-bold mb-4 text-green-600">Scan Your Plant</h3>
               <p className="text-gray-600 mb-6">Choose a method to upload your plant image for analysis</p>
-              <div className="flex justify-center space-x-4">
+              <form onSubmit={handleSubmit} className="flex flex-col items-center">
+                <input type="file" onChange={handleImageChange} className="mb-4" />
+                {image && (
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt="Selected"
+                    className="w-32 h-32 object-cover rounded-full mb-4"
+                  />
+                )}
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-green-500 text-white px-4 py-2 rounded-lg flex items-center"
+                  type="submit"
+                  disabled={loading}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center mb-4"
                 >
-                  <FaCamera className="mr-2" /> Take Photo
+                  {loading ? 'Processing...' : <><FaCloudUploadAlt className="mr-2" /> Upload Image</>}
                 </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center"
-                >
-                  <FaCloudUploadAlt className="mr-2" /> Upload Image
-                </motion.button>
-              </div>
+                {prediction !== null && (
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleRetry}
+                    className="bg-red-500 text-white px-4 py-2 rounded-lg flex items-center"
+                  >
+                    <FaRedo className="mr-2" /> Retry
+                  </motion.button>
+                )}
+              </form>
+              {prediction !== null && (
+                <div className="mt-6">
+                  <h3 className="text-xl font-bold text-green-600">Prediction: {prediction}</h3>
+                </div>
+              )}
             </motion.div>
           </motion.div>
         )}
