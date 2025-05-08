@@ -53,7 +53,8 @@ const MaterialDetailsModal = ({
               <h2 className="text-2xl font-bold text-gray-800 mb-2">{materialDetails.materialName}</h2>
               <p className="text-lg font-semibold text-gray-700 mb-6">Rs. {materialDetails.pricePerUnit.toFixed(2)}</p>
               
-              <p className="text-gray-600 mb-8">{materialDetails.description || 'No description available.'}</p>
+              <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Uasage</h3>
+              <p className="text-gray-600 mb-8">{materialDetails.usageInstructions || 'No description available.'}</p>
               
               <div className="flex flex-col space-y-6 mb-8">
                 <div>
@@ -61,11 +62,7 @@ const MaterialDetailsModal = ({
                   <p className="text-gray-800">{materialDetails.category}</p>
                 </div>
                 
-                <div>
-                  <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Supplier</h3>
-                  <p className="text-gray-800">{materialDetails.supplierName}</p>
-                </div>
-                
+               
                 {materialDetails.diseaseUsage && materialDetails.diseaseUsage.length > 0 && (
                   <div>
                     <h3 className="text-sm font-medium text-gray-500 uppercase tracking-wider mb-2">Recommended For</h3>
