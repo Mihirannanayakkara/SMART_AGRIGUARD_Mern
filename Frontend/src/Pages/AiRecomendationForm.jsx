@@ -4,9 +4,197 @@ import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { MdOutlineHealthAndSafety, MdOutlineSpeed, MdOutlineTipsAndUpdates } from "react-icons/md";
 import { BiLoaderCircle } from "react-icons/bi";
-import { FaLeaf, FaVirus, FaThermometerHalf, FaCloudRain, FaHistory, FaShieldAlt, FaSeedling, FaPrint } from 'react-icons/fa';
+import { FaLeaf, FaVirus, FaThermometerHalf, FaCloudRain, FaHistory, FaShieldAlt, FaSeedling, FaDownload  } from 'react-icons/fa';
 import { FaRedo } from 'react-icons/fa';
+import { Page, Text, View, Document, StyleSheet, PDFDownloadLink, Image } from "@react-pdf/renderer";
 
+// PDF styles
+const styles = StyleSheet.create({
+  page: { 
+    padding: 30, 
+    backgroundColor: '#f8faf8' 
+  },
+  header: { 
+    fontSize: 12, 
+    marginBottom: 10, 
+    textAlign: "right", 
+    color: '#4b5563' 
+  },
+  title: { 
+    fontSize: 24, 
+    marginBottom: 10, 
+    textAlign: "center", 
+    color: '#166534',
+    fontWeight: 'bold'
+  },
+  subtitle: { 
+    fontSize: 16, 
+    marginBottom: 20, 
+    textAlign: "center", 
+    color: '#4b5563' 
+  },
+  section: { 
+    marginBottom: 20, 
+    padding: 15, 
+    backgroundColor: 'white', 
+    borderRadius: 8 
+  },
+  sectionTitle: { 
+    fontSize: 16, 
+    marginBottom: 10, 
+    color: '#166534',
+    fontWeight: 'bold',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+    paddingBottom: 5
+  },
+  fieldContainer: {
+    marginBottom: 10
+  },
+  fieldLabel: {
+    fontSize: 12,
+    color: '#4b5563',
+    marginBottom: 2
+  },
+  fieldValue: {
+    fontSize: 14,
+    color: '#1f2937'
+  },
+  treatmentSection: {
+    marginBottom: 15,
+    padding: 10,
+    borderLeftWidth: 4,
+    borderLeftColor: '#16a34a',
+    backgroundColor: '#f0fdf4',
+    borderRadius: 4
+  },
+  treatmentTitle: {
+    fontSize: 14,
+    color: '#166534',
+    marginBottom: 5,
+    fontWeight: 'bold'
+  },
+  treatmentText: {
+    fontSize: 12,
+    color: '#374151'
+  },
+  footer: { 
+    position: 'absolute', 
+    bottom: 30, 
+    left: 0, 
+    right: 0, 
+    textAlign: 'center', 
+    color: '#4b5563', 
+    paddingTop: 10, 
+    borderTopWidth: 1, 
+    borderColor: '#e5e7eb',
+    fontSize: 10
+  },
+  logo: {
+    width: 50,
+    height: 50,
+    alignSelf: 'center',
+    marginBottom: 10
+  }
+});
+
+// PDF Document component
+const TreatmentReportPDF = ({ formData, treatment }) => (
+  <Document>
+    <Page size="A4" style={styles.page}>
+      {/* Header */}
+      <Text style={styles.header}>Generated on: {new Date().toLocaleString()}</Text>
+      
+      {/* Title */}
+      <Text style={styles.title}>Plant Disease Treatment Report</Text>
+      <Text style={styles.subtitle}>AI-Generated Treatment Recommendations</Text>
+      
+      {/* Plant & Disease Information */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Plant & Disease Information</Text>
+        
+        <View style={styles.fieldContainer}>
+          <Text style={styles.fieldLabel}>Plant Name:</Text>
+          <Text style={styles.fieldValue}>{formData.plantName}</Text>
+        </View>
+        
+        <View style={styles.fieldContainer}>
+          <Text style={styles.fieldLabel}>Detected Disease:</Text>
+          <Text style={styles.fieldValue}>{formData.detectedDisease}</Text>
+        </View>
+        
+        <View style={styles.fieldContainer}>
+          <Text style={styles.fieldLabel}>Affected Parts:</Text>
+          <Text style={styles.fieldValue}>{formData.affectedParts || "Not specified"}</Text>
+        </View>
+        
+        <View style={styles.fieldContainer}>
+          <Text style={styles.fieldLabel}>Severity Level:</Text>
+          <Text style={styles.fieldValue}>{formData.severityLevel}</Text>
+        </View>
+        
+        <View style={styles.fieldContainer}>
+          <Text style={styles.fieldLabel}>Spread Rate:</Text>
+          <Text style={styles.fieldValue}>{formData.spreadRate}</Text>
+        </View>
+      </View>
+      
+      {/* Disease Explanation */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Disease Explanation</Text>
+        <Text style={styles.treatmentText}>{treatment.disease_explanation}</Text>
+      </View>
+      
+      {/* Treatment Recommendations */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Treatment Recommendations</Text>
+        
+        {treatment.treatment_recommendations.organic && (
+          <View style={styles.treatmentSection}>
+            <Text style={styles.treatmentTitle}>Organic Treatment</Text>
+            <Text style={styles.treatmentText}>{treatment.treatment_recommendations.organic}</Text>
+          </View>
+        )}
+        
+        {treatment.treatment_recommendations.chemical && (
+          <View style={styles.treatmentSection}>
+            <Text style={styles.treatmentTitle}>Chemical Treatment</Text>
+            <Text style={styles.treatmentText}>{treatment.treatment_recommendations.chemical}</Text>
+          </View>
+        )}
+        
+        {treatment.treatment_recommendations.both && (
+          <View style={styles.treatmentSection}>
+            <Text style={styles.treatmentTitle}>Combined Approach</Text>
+            <Text style={styles.treatmentText}>{treatment.treatment_recommendations.both}</Text>
+          </View>
+        )}
+      </View>
+      
+      {/* Preventive Measures */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Preventive Measures</Text>
+        <Text style={styles.treatmentText}>{treatment.preventive_measures}</Text>
+      </View>
+      
+      {/* Recovery Practices */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Best Recovery Practices</Text>
+        <Text style={styles.treatmentText}>{treatment.best_recovery_practices}</Text>
+      </View>
+      
+      {/* Expert Advice */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Expert Advice</Text>
+        <Text style={styles.treatmentText}>{treatment.expert_advice}</Text>
+      </View>
+      
+      {/* Footer */}
+      <Text style={styles.footer}>© {new Date().getFullYear()} SMART AGRIGUARD. All rights reserved.</Text>
+    </Page>
+  </Document>
+
+      );
 
 const AiTreatmentForm = () => {
   const navigate = useNavigate();
@@ -369,18 +557,44 @@ const AiTreatmentForm = () => {
                   </div>
                   
                   {/* Action Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                    <button 
-                      onClick={() => window.print()}
-                      className="flex-1 flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                  <div className="pt-4 border-t border-gray-200 flex flex-wrap gap-4">
+                    <PDFDownloadLink
+                      document={<TreatmentReportPDF formData={formData} treatment={treatment} />}
+                      fileName={`${formData.plantName}_Treatment_Report.pdf`}
+                      className="flex-1"
                     >
-                      <FaPrint className="mr-2" /> Print Report
-                    </button>
-                    <button 
-                      onClick={() => setTreatment(null)}
-                      className="flex-1 flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                      {({ blob, url, loading, error }) => (
+                        <button
+                          className={`w-full flex justify-center items-center py-3 px-6 border border-transparent rounded-lg shadow-sm text-base font-medium text-white ${
+                            loading ? "bg-green-400" : "bg-green-600 hover:bg-green-700"
+                          } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200`}
+                          disabled={loading}
+                        >
+                          <FaDownload className="mr-2" />
+                          {loading ? "Preparing PDF..." : "Download Report"}
+                        </button>
+                      )}
+                    </PDFDownloadLink>
+                    
+                    <button
+                      onClick={() => {
+                        setTreatment(null);
+                        setFormData({
+                          plantName: "",
+                          detectedDisease: "",
+                          observedSymptoms: "",
+                          affectedParts: "",
+                          severityLevel: "Medium",
+                          spreadRate: "Moderate",
+                          weatherConditions: "",
+                          preferredTreatmentType: "Both",
+                          previousDiseaseHistory: "",
+                        });
+                      }}
+                      className="flex-1 flex justify-center items-center py-3 px-6 border border-gray-300 rounded-lg shadow-sm text-base font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200"
                     >
-                      <FaRedo className="mr-2" /> New Analysis
+                      <FaRedo className="mr-2" />
+                      Start New Analysis
                     </button>
                   </div>
                 </div>

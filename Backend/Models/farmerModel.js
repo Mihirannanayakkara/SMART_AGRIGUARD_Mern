@@ -64,7 +64,10 @@ const farmerSchema = mongoose.Schema(
         longitude: { 
             type: String, 
             default: null 
-        }
+        },
+        image: {
+            type: String 
+         }
 
     }
 );

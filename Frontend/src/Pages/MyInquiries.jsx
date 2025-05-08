@@ -10,7 +10,9 @@ import {
   FaMapMarkerAlt,
   FaLeaf,
   FaVirus,
+  FaSort
 } from "react-icons/fa";
+import { MdSearch } from "react-icons/md";
 import { useSnackbar } from "notistack";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -38,6 +40,14 @@ const MyInquiries = () => {
   const [showDeleteForm, setShowDeleteForm] = useState(false);
   const [selectedInquiryForDelete, setSelectedInquiryForDelete] =
     useState(null);
+
+
+   // Add new state variables for search and filter
+   const [searchTerm, setSearchTerm] = useState('');
+   const [sortField, setSortField] = useState('requestDate');
+   const [sortOrder, setSortOrder] = useState('desc');
+   const [filterStatus, setFilterStatus] = useState('');
+  
   const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
 
@@ -81,6 +91,40 @@ const MyInquiries = () => {
     setShowDeleteForm(true);
   };
 
+  // Add sort handler
+  const handleSort = (field) => {
+    if (field === sortField) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
+    }
+  };
+
+  // Filter and sort inquiries
+  const filteredAndSortedInquiries = inquiries
+    .filter((inquiry) => {
+      const matchesSearch = 
+        inquiry.plantName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        inquiry.diseaseName.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesStatus = 
+        filterStatus === '' || inquiry.status === filterStatus;
+      
+      return matchesSearch && matchesStatus;
+    })
+    .sort((a, b) => {
+      if (sortField === 'requestDate') {
+        const dateA = new Date(a[sortField]);
+        const dateB = new Date(b[sortField]);
+        return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+      } else {
+        if (a[sortField] < b[sortField]) return sortOrder === 'asc' ? -1 : 1;
+        if (a[sortField] > b[sortField]) return sortOrder === 'asc' ? 1 : -1;
+        return 0;
+      }
+    });
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -114,18 +158,63 @@ const MyInquiries = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-      <div className="flex justify-between items-center mb-12">
+      <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800 ">Your Inquiries</h1>
         <button
           onClick={handleCreateInquiry}
-          className="bg-green-700 hover:bg-green-900 text-white text-lg font-bold py-2 px-4 mr-3 mt-4 flex items-center transition duration-300"
+          className="bg-green-600 hover:bg-green-800 text-white text-lg font-bold py-2 px-4 mr-3 mt-4 flex items-center transition duration-300"
         >
           <FaPlus className="mr-2" /> Create Inquiry
         </button>
       </div>
       </motion.div>
+
+      {/* Add search and filter section */}
+      <div className="bg-white rounded-lg p-4 mb-8 shadow-md">
+          <div className="flex flex-wrap gap-4 items-center">
+            <div className="flex-1 min-w-[200px] relative">
+              <input
+                type="text"
+                placeholder="Search by plant or disease name..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full p-2 pl-10 border-2 border-green-400 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
+              />
+              <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 text-xl" />
+            </div>
+            
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 text-sm"
+            >
+              <option value="">All Statuses</option>
+              <option value="Pending">Pending</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+            
+            <button
+              onClick={() => handleSort('plantName')}
+              className="p-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors flex items-center text-sm"
+            >
+              <FaSort className="mr-1" />
+              Plant Name
+            </button>
+            
+            <button
+              onClick={() => handleSort('requestDate')}
+              className="p-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors flex items-center text-sm"
+            >
+              <FaSort className="mr-1" />
+              Date
+            </button>
+          </div>
+        </div>
+
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {inquiries.map((inquiry, index) => (
+        {filteredAndSortedInquiries.map((inquiry, index) => (
           <motion.div
             key={inquiry._id}
             whileHover={{ scale: 1.03 }}
@@ -134,7 +223,7 @@ const MyInquiries = () => {
           >
             <div className="h-48 bg-green-100 relative">
               <img
-                src={placeholderImages[index % placeholderImages.length]}
+                src={inquiry.image? inquiry.image : placeholderImages[index % placeholderImages.length]}
                 alt={`Plant disease: ${inquiry.diseaseName}`}
                 className="w-full h-full object-cover"
               />
@@ -202,11 +291,17 @@ const MyInquiries = () => {
         ))}
       </div>
       
+       {/* Show message when no inquiries match the filters */}
+       {filteredAndSortedInquiries.length === 0 && !loading && (
+          <div className="text-center py-8 mt-4">
+            <p className="text-xl text-gray-600">No inquiries found matching your criteria.</p>
+          </div>
+        )}
       
 
       {showCreateForm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg p-8 max-w-2xl w-full">
+          <div className="p-8 max-w-2xl w-full">
             <CreateForm
               onClose={() => setShowCreateForm(false)}
               onSubmitSuccess={() => {
@@ -286,10 +381,7 @@ const InquiryDetailsPopup = ({ inquiry, onClose }) => {
           {/* Left side - Image */}
           <div className="w-2/5 bg-green-100">
             <img
-              src={
-                inquiry.imageUrl ||
-                "https://thumbs.dreamstime.com/b/plant-disease-mango-laves-disease-fungi-plant-disease-100851421.jpg?w=360"
-              }
+              src={inquiry.image? inquiry.image : placeholderImages[index % placeholderImages.length]}
               alt={inquiry.plantName}
               className="w-full h-full object-cover"
             />
