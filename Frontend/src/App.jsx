@@ -36,7 +36,7 @@ import ManagerDashboard from "./Pages/ManagerDashboard";
 import ManagerAlertForm from "./Pages/ManagerAlertForm";
 import UpdateAlerts from "./Pages/UpdateAlerts";
 
-import CNNmodel from "./Pages/CNNmodel"
+import PlantDiseaseIdentifier from "./Pages/apitest";
 
 const App = () => {
   return (
@@ -87,8 +87,7 @@ const App = () => {
           {/* <Route path='/materials/delete/:id' element={<DeleteMaterial />} /> */}
           <Route path="/materials/buy" element={<BuyMaterial />} />
           <Route path="/materials/analytics" element={<SupplierAnalytics />} />
-
-          <Route path="/cnnmodel" element={<CNNmodel />} />
+          <Route path="/plantapi" element={<PlantDiseaseIdentifier />} />
         </Routes>
       </SnackbarProvider>
     </>
