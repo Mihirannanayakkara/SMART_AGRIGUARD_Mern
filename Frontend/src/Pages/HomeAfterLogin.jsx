@@ -1,7 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaLeaf, FaArrowDown, FaCamera, FaCloudUploadAlt, FaRobot, FaBullhorn, FaRedo } from 'react-icons/fa';
-import { useEffect } from 'react';
 import axios from 'axios';
 import LogingNavBar from '../components/LogingNavBar';
 
@@ -35,33 +34,51 @@ const HomeAfterLogin = () => {
     setPrediction(null); // Reset prediction when a new image is selected
   };
 
+  const identifyDisease = async (selectedFile) => {
+    if (!selectedFile) return alert("Please select an image.");
+
+    const reader = new FileReader();
+    reader.readAsDataURL(selectedFile);
+    reader.onloadend = async () => {
+      const base64Image = reader.result.split(",")[1]; // Remove data URI prefix
+
+      try {
+        const response = await axios.post(
+          "https://crop.kindwise.com/api/v1/identification",
+          {
+            images: [base64Image],
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "Api-Key": "w9dI5ltIik0SAYqj4soymqYV2zMsiY6VsqxnpMhlXWS1OjcSSj",
+            },
+          }
+        );
+
+        const topSuggestion = response.data.result.disease.suggestions[0];
+        setPrediction(topSuggestion.name);
+      } catch (error) {
+        console.error("Identification failed:", error);
+        alert("Failed to identify disease. Check console for details.");
+      }
+    };
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!image) return;
 
-    const formData = new FormData();
-    formData.append('file', image);
-
     setLoading(true);
-
-    try {
-      const response = await axios.post('http://localhost:5000/predict', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      setPrediction(response.data.predicted_label);
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      setPrediction('Error');
-    } finally {
-      setLoading(false);
-    }
+    await identifyDisease(image);
+    setLoading(false);
   };
 
-  const handleRetry = () => {
-    setImage(null);
-    setPrediction(null);
+  const handleRetry = async () => {
+    if (!image) return;
+    setLoading(true);
+    await identifyDisease(image);
+    setLoading(false);
   };
 
   return (
