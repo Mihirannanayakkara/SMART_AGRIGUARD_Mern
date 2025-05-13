@@ -26,6 +26,7 @@ const AdminSidebar = ({ user }) => {
     { path: '/admin/users', icon: <FaUsers size={20} />, title: 'Users' },
     { path: '/admin/articles/create', icon: <FaNewspaper size={20} />, title: 'Create Article' },
     { path: '/admin/articles', icon: <FaChartBar size={20} />, title: 'Manage Articles' },
+     { path: '/admin/viewarticle', icon: <FaNewspaper size={20} />, title: 'Articles' },
     { path: '/admin/settings', icon: <FaCog size={20} />, title: 'Settings' },
   ];
 

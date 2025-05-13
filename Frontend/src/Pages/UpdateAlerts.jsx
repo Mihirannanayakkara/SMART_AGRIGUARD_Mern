@@ -4,7 +4,7 @@ import { useSnackbar } from "notistack";
 import LogingNavBar from '../components/MNavigationBar ';
 
 const severityLevels = ["Low", "Medium", "High", "Critical"];
-const alertsPerPage = 5;
+const alertsPerPage = 4;
 
 const tagColors = {
   Low: "bg-blue-100 text-blue-600",

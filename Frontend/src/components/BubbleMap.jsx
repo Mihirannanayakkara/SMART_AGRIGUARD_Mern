@@ -91,15 +91,15 @@ const BubbleMap = () => {
   };
 
   const getBubbleColor = (nearbyCount) => {
-    if (nearbyCount >= 3) return "#f87171"; // red
-    if (nearbyCount >= 2) return "#fbbf24"; // orange
+    if (nearbyCount >= 5) return "#ec3c4c"; // red ec3c4c
+    if (nearbyCount >= 3) return "#d97706"; // orange d97706
     if (nearbyCount >= 1) return "#60a5fa"; // blue
     return "#4ade80"; // green
   };
 
   const getBubbleSize = (nearbyCount) => {
-    if (nearbyCount >= 3) return 15000;
-    if (nearbyCount >= 2) return 10000;
+    if (nearbyCount >= 5) return 15000;
+    if (nearbyCount >= 3) return 10000;
     if (nearbyCount >= 1) return 8000;
     return 5000;
   };

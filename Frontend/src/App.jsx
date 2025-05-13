@@ -58,6 +58,7 @@ const App = () => {
           <Route path="/lognavbar" element={<LogNavBar />} />
           <Route path="/admin/manageusers" element={<UserManagement />} />
           <Route path="/viewarticles" element={<ArticleView />} />
+          <Route path="/admin/viewarticle" element={<ArticleView />} />
 
           {/* Inquiry Form & AI Recommendation Routes */}
           <Route path="/dashboard" element={<Dashboard />}>
