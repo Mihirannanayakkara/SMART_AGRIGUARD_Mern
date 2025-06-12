@@ -136,7 +136,15 @@ const ManagerAlertForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8 relative">
+    <div
+      className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8 relative"
+      style={{
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')",
+        backgroundColor: "rgba(243, 244, 246, 0.85)",
+        backgroundBlendMode: "overlay",
+      }}
+    >
       <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
         <div className="bg-green-600 py-6 px-4 sm:px-6">
           <h1 className="text-center text-white text-3xl font-bold tracking-tight">

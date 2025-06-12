@@ -45,21 +45,15 @@ const AdminDashboard = () => {
     const fetchStats = async () => {
       try {
         // API call here
-        // For now, we'll keep using the mock data
+        // For now, we'll keep using the mock data for these stats
         setStats({
           articles: 48,
           views: 21,
           engagement: 83.4
         });
         
-        // Mock recent activities
-        setRecentActivities([
-          { id: 1, type: 'user', action: 'New user registered', name: 'John Doe', time: '2 hours ago' },
-          { id: 2, type: 'article', action: 'Article published', name: 'Plant Disease Prevention Tips', time: '5 hours ago' },
-          { id: 3, type: 'user', action: 'User updated profile', name: 'Sarah Johnson', time: '1 day ago' },
-          { id: 4, type: 'article', action: 'Article edited', name: 'Organic Farming Methods', time: '2 days ago' },
-          { id: 5, type: 'user', action: 'New user registered', name: 'Michael Brown', time: '3 days ago' }
-        ]);
+        // Fetch real activities
+        await fetchRecentActivities();
         
         setLoading(false);
       } catch (error) {
@@ -70,6 +64,24 @@ const AdminDashboard = () => {
     
     fetchStats();
   }, [navigate]);
+
+  // Fetch recent activities
+  const fetchRecentActivities = async () => {
+    try {
+      const response = await axios.get('http://localhost:5557/api/activities/recent');
+      setRecentActivities(response.data);
+    } catch (error) {
+      console.error('Error fetching recent activities:', error);
+      // Fallback to mock data if API fails
+      setRecentActivities([
+        { id: 1, type: 'user', action: 'New user registered', name: 'John Doe', time: '2 hours ago' },
+        { id: 2, type: 'article', action: 'Article published', name: 'Plant Disease Prevention Tips', time: '5 hours ago' },
+        { id: 3, type: 'user', action: 'User updated profile', name: 'Sarah Johnson', time: '1 day ago' },
+        { id: 4, type: 'article', action: 'Article edited', name: 'Organic Farming Methods', time: '2 days ago' },
+        { id: 5, type: 'user', action: 'New user registered', name: 'Michael Brown', time: '3 days ago' }
+      ]);
+    }
+  };
 
   //fetch user count
   const fetchUserCount = async () => {
@@ -201,7 +213,7 @@ const AdminDashboard = () => {
             >
               <div className="flex justify-between items-center mb-6">
                 <h3 className="text-lg font-semibold text-gray-800">Recent Activities</h3>
-                <button className="text-sm text-green-600 hover:text-green-800">View All</button>
+                <button className="text-sm text-green-600 hover:text-green-800" onClick={fetchRecentActivities}>Refresh</button>
               </div>
               <div className="space-y-4">
                 {recentActivities.map((activity) => (

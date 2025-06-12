@@ -108,12 +108,14 @@ const ArticleCreation = ({ isOpen, onClose }) => {
   };
 
   const validateForm = () => {
-    const errors = {};
-    if (!title.trim()) errors.title = "Title is required";
-    if (wordCount < 50) errors.content = "Content must be at least 50 words";
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
+  const errors = {};
+  if (!title.trim()) errors.title = "Title is required";
+  else if (title.trim().length < 5) errors.title = "Title must be at least 5 characters";
+  else if (title.trim().length > 100) errors.title = "Title must be less than 100 characters";
+  if (wordCount < 20) errors.content = "Content must be at least 20 words";
+  setFormErrors(errors);
+  return Object.keys(errors).length === 0;
+};
 
   const handlePublish = async (event) => {
     event.preventDefault();
@@ -189,14 +191,17 @@ const ArticleCreation = ({ isOpen, onClose }) => {
               </div>
               <form onSubmit={handlePublish}>
                 <input
-                  type="text"
-                  placeholder="Article Title"
-                  className={`w-full p-2 mb-2 border rounded ${formErrors.title ? 'border-red-500' : ''}`}
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  required
-                />
-                {formErrors.title && <p className="text-red-500 text-sm mb-2">{formErrors.title}</p>}
+  type="text"
+  placeholder="Article Title"
+  className={`w-full p-2 mb-2 border rounded ${formErrors.title ? 'border-red-500' : ''}`}
+  value={title}
+  onChange={(e) => setTitle(e.target.value)}
+  required
+/>
+{formErrors.title && <p className="text-red-500 text-sm mb-2">{formErrors.title}</p>}
+{title.length > 0 && title.length < 5 && (
+  <p className="text-red-500 text-sm mb-2">{5 - title.length} more characters needed</p>
+)}
                 <div className="mb-2 flex space-x-2">
                   <button type="button" onClick={() => handleTextFormat('bold')} className="p-1 border rounded">
                     <FaBold />
@@ -212,10 +217,10 @@ const ArticleCreation = ({ isOpen, onClose }) => {
                   <div
                     ref={contentRef}
                     contentEditable
-                    className={`w-full p-2 mb-2 border rounded min-h-[200px] ${formErrors.content ? 'border-red-500' : ''}`}
-                    onInput={(e) => setContent(e.target.innerHTML)}
-                    dangerouslySetInnerHTML={{ __html: content }}
+                     className={`w-full p-2 mb-2 border rounded min-h-[200px] ${formErrors.content ? 'border-red-500' : ''}`}
+                     onInput={(e) => setContent(e.target.innerHTML)}
                   />
+
                   <div className="absolute bottom-2 right-2 text-sm text-gray-500">
                     {wordCount} words
                   </div>

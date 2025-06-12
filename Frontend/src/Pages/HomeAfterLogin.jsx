@@ -11,6 +11,7 @@ const HomeAfterLogin = () => {
   const [image, setImage] = useState(null);
   const [prediction, setPrediction] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [scanCount, setScanCount] = useState(0);
 
   const scrollToScan = () => {
     scanRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -25,44 +26,12 @@ const HomeAfterLogin = () => {
         console.error('Error fetching materials:', error);
       }
     };
-
     fetchMaterials();
   }, []);
 
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
-    setPrediction(null); // Reset prediction when a new image is selected
-  };
-
-  const identifyDisease = async (selectedFile) => {
-    if (!selectedFile) return alert("Please select an image.");
-
-    const reader = new FileReader();
-    reader.readAsDataURL(selectedFile);
-    reader.onloadend = async () => {
-      const base64Image = reader.result.split(",")[1]; // Remove data URI prefix
-
-      try {
-        const response = await axios.post(
-          "https://crop.kindwise.com/api/v1/identification",
-          {
-            images: [base64Image],
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              "Api-Key": "w9dI5ltIik0SAYqj4soymqYV2zMsiY6VsqxnpMhlXWS1OjcSSj",
-            },
-          }
-        );
-
-        const topSuggestion = response.data.result.disease.suggestions[0];
-        setPrediction(topSuggestion.name);
-      } catch (error) {
-        console.error("Identification failed:", error);
-        alert("Failed to identify disease. Check console for details.");
-      }
-    };
+    setPrediction(null);
   };
 
   const handleSubmit = async (e) => {
@@ -70,29 +39,74 @@ const HomeAfterLogin = () => {
     if (!image) return;
 
     setLoading(true);
-    await identifyDisease(image);
+    if (scanCount === 0) {
+      // First scan: local model
+      const formData = new FormData();
+      formData.append('file', image);
+      try {
+        const response = await axios.post(
+          'http://localhost:5000/predict',
+          formData,
+          { headers: { 'Content-Type': 'multipart/form-data' } }
+        );
+        setPrediction(response.data.predicted_label);
+        setScanCount(1);
+      } catch (error) {
+        console.error('Error uploading image to local model:', error);
+        setPrediction('Error');
+      }
+    } else {
+      // Retry: external API
+      const reader = new FileReader();
+      reader.readAsDataURL(image);
+      reader.onloadend = async () => {
+        const base64Image = reader.result.split(',')[1];
+        try {
+          const response = await axios.post(
+            'https://crop.kindwise.com/api/v1/identification',
+            { images: [base64Image] },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'Api-Key': 'w9dI5ltIik0SAYqj4soymqYV2zMsiY6VsqxnpMhlXWS1OjcSSj'
+              }
+            }
+          );
+          const topSuggestion = response.data.result.disease.suggestions[0];
+          setPrediction(topSuggestion.name);
+        } catch (error) {
+          console.error('Retry API failed:', error);
+          setPrediction('Error');
+        }
+      };
+    }
     setLoading(false);
+    setShowScanModal(false);
   };
 
-  const handleRetry = async () => {
-    if (!image) return;
-    setLoading(true);
-    await identifyDisease(image);
-    setLoading(false);
+  const handleRetry = () => {
+    setImage(null);
+    setPrediction(null);
+    setShowScanModal(true);
   };
 
   return (
-    <div className="min-h-screen bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')" }}>
+    <div
+      className="min-h-screen bg-cover bg-center"
+      style={{
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"
+      }}
+    >
       <LogingNavBar />
       <div className="absolute inset-0 bg-black bg-opacity-50"></div>
-    
+
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8 }}
         className="absolute top-0 left-8 text-white font-bold text-4xl"
-      >
-      </motion.div>
+      ></motion.div>
 
       <motion.div
         initial={{ opacity: 0, y: -50 }}
@@ -103,9 +117,7 @@ const HomeAfterLogin = () => {
         <h3 className="text-sm font-bold mb-1 flex items-center">
           <FaBullhorn className="mr-2" /> New Feature
         </h3>
-        <p className="text-xs">
-          Advanced disease prediction model now available!
-        </p>
+        <p className="text-xs">Advanced disease prediction model now available!</p>
       </motion.div>
 
       <div className="relative z-10 flex flex-col items-center justify-center h-screen text-white">
@@ -169,7 +181,17 @@ const HomeAfterLogin = () => {
             Click on the circle above or drag and drop your plant image here to start AI scanning.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          {/* Display AI prediction result here */}
+          {prediction && (
+            <div className="text-center mt-4 text-2xl text-red-600 font-semibold">
+              Predicted Disease: {prediction}
+              <button onClick={handleRetry} className="ml-4 text-blue-500 hover:underline">
+                <FaRedo className="inline mr-1" /> Retry
+              </button>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 mt-12">
             {[
               { icon: FaCamera, title: 'Quick Detection', description: 'Instant results with our advanced image recognition.' },
               { icon: FaRobot, title: 'AI-Powered Analysis', description: 'Cutting-edge AI algorithms for accurate diagnosis.' },
@@ -191,7 +213,6 @@ const HomeAfterLogin = () => {
         </motion.div>
       </div>
 
-      {/* Featured Plant Medicines - Updated */}
       <div className="bg-gray-100 py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold text-center mb-12 text-green-600">Featured Plant Medicines</h2>
@@ -201,7 +222,7 @@ const HomeAfterLogin = () => {
                 key={material._id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
                 className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col items-center"
               >
                 <div className="w-full bg-green-100 flex items-center justify-center p-4">
@@ -217,7 +238,7 @@ const HomeAfterLogin = () => {
                   <p className="text-gray-600 mb-7 text-md">Usage: {material.diseaseUsage}</p>
                   <div className="flex justify-between items-center">
                     <span className="text-lg font-bold text-green-600">${material.pricePerUnit}</span>
-                    <button className="bg-green-500 text-white  mb-5 px-4 py-2 rounded-full text-sm hover:bg-green-600 transition duration-300">
+                    <button className="bg-green-500 text-white mb-5 px-4 py-2 rounded-full text-sm hover:bg-green-600 transition duration-300">
                       Add to Cart
                     </button>
                   </div>

@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import User from "../Models/User.js";
 import { JWT_SECRET } from "../config.js";
 import authenticateToken from "../Middleware/authMiddleware.js";
+import Activity from "../Models/Activity.js";
 
 const router = express.Router();
 
@@ -38,6 +39,16 @@ router.post("/register", async (req, res) => {
     });
 
     await newUser.save();
+
+     // Log the activity
+     const newActivity = new Activity({
+      type: 'user',
+      action: 'New user registered',
+      name: username,
+      userId: newUser._id
+    });
+    
+    await newActivity.save();
 
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
@@ -164,4 +175,4 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-export default router;  
+export default router;

@@ -104,7 +104,13 @@ const ManagerDashboard = () => {
   return (
     <>
     <LogingNavBar />
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-gray-100"
+    style={{
+      backgroundImage:
+        "url('https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')",
+      backgroundColor: "rgba(243, 244, 246, 0.85)",
+      backgroundBlendMode: "overlay",
+    }}>
       
       {/* Sidebar */}
       <motion.div
@@ -172,7 +178,7 @@ const ManagerDashboard = () => {
         {activeTab === "all-inquiries" && (
           <>
             {/* Filters */}
-            <div className="bg-white border border-green-300 p-6 rounded-xl shadow-lg flex flex-wrap items-center justify-between gap-4 mb-6">
+            <div className="bg-white border border-green-400 p-6 rounded-xl shadow-lg flex flex-wrap items-center justify-between gap-4 mb-6">
               <div className="w-full sm:w-auto">
                 <label className="block text-sm mb-1">Filter by Status</label>
                 <select
@@ -228,8 +234,8 @@ const ManagerDashboard = () => {
                       <th className="p-4 text-left">Farmer</th>
                       <th className="p-4 text-left">Plant</th>
                       <th className="p-4 text-left">Disease</th>
+                      <th className="p-4 text-left">Issue</th>
                       
-                      <th className="p-4 text-left">Reply</th>
                       <th className="p-4 text-left"></th>
                       <th className="p-4 text-left">Status</th>
                       <th className="p-4 text-left">Action</th>
@@ -241,18 +247,12 @@ const ManagerDashboard = () => {
       <td className="p-4">{form.fullname}</td>
       <td className="p-4">{form.plantName}</td>
       <td className="p-4">{form.diseaseName}</td>
-      {/* <td className="p-4">
+      <td className="p-4">
         {form.issueDescription.length > 10
           ? `${form.issueDescription.slice(0, 10)}...`
           : form.issueDescription}
-      </td> */}
-      <td className="p-4">
-        {form.reply
-          ? form.reply.length > 10
-            ? `${form.reply.slice(0, 10)}...`
-            : form.reply
-          : "No reply"}
       </td>
+      
       <td className="p-4 flex gap-2">
         {form.reply && (
           <>
@@ -265,7 +265,7 @@ const ManagerDashboard = () => {
               className="bg-blue-100 hover:bg-blue-200 text-blue-500 p-2 rounded-full"
               title="View Reply"
             >
-              <FaEye size={18} />
+              <FaEye size={12} />
             </button>
             <button
               onClick={() => {
@@ -276,14 +276,14 @@ const ManagerDashboard = () => {
               className="bg-green-100 hover:bg-green-200 text-green-500 p-2 rounded-full"
               title="Edit Reply"
             >
-              <FaEdit size={18} />
+              <FaEdit size={12} />
             </button>
             <button
               onClick={() => deleteReply(form._id)}
               className="bg-red-100 hover:bg-red-200 text-red-500 p-2 rounded-full"
               title="Delete Reply"
             >
-              <FaTrash size={18} />
+              <FaTrash size={12} />
             </button>
           </>
         )}

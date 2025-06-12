@@ -10,6 +10,7 @@ import materialRoute from './Routes/MaterialRoute.js';
 import articleRoutes from './Routes/articleRoutes.js';
 import alertRoutes from "./Routes/alertRoutes.js";
 import ManagerRoutes from "./Routes/ManagerRoutes.js";
+import activityRoutes from './Routes/activityRoutes.js';
 
 
 
@@ -36,6 +37,8 @@ app.use("/api/auth", userRoutes);
 
 // Test Routes
 app.use("/api/test", testRoute);
+
+app.use('/api/activities', activityRoutes);
 
 // Feature Routes
 app.use("/farmer", FarmerFormRoute);
