@@ -57,3 +57,13 @@ npm install
 
 # Start the development server
 npm run dev
+```
+### Some User Interfaces of site
+![Screenshot_13-6-2025_163231_localhost](https://github.com/user-attachments/assets/072fe11e-15f6-44b2-b01e-f22ea8996325)
+![Screenshot 2025-06-13 163606](https://github.com/user-attachments/assets/bcc541d3-698b-417b-bb05-2ccf72fea165)
+![screencapture-localhost-5173-dashboard-aitreatment-2025-05-05-07_17_13](https://github.com/user-attachments/assets/c12190c7-80d2-47c1-9829-b1d2064da3e1)
+![Screenshot_13-6-2025_164211_localhost](https://github.com/user-attachments/assets/c9e44dae-a579-4238-9d1d-eeb69e0c4357)
+
+
+
+
